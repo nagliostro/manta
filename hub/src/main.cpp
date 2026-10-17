@@ -24,6 +24,7 @@
 #include "demo/catalog.hpp"
 #include "emuland/art.hpp"
 #include "emuland/model.hpp"
+#include "platform/ps5/installer/installer.hpp"
 #include "gfx/renderer.hpp"
 #include "platform/ps5/audio_out.hpp"
 #include "platform/ps5/display_egl.hpp"
@@ -131,6 +132,10 @@ int main()
     // 2. What is installed, and a look at GitHub for newer releases (on the
     // installer's own thread; the screen shows the cached answer meanwhile).
     curl_global_init(CURL_GLOBAL_DEFAULT);
+    // The online catalog's last copy joins the built-in one before anything
+    // reads the catalog (it is fixed at the first read).
+    if (data)
+        emuland::installer::load_online_catalog();
     emuland::scan(emuland::library());
     if (data)
     {

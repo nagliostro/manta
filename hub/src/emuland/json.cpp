@@ -2,7 +2,7 @@
 // Copyright (C) 2026 Emuland contributors
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "platform/ps5/installer/json.hpp"
+#include "emuland/json.hpp"
 
 #include <cstdlib>
 

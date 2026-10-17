@@ -59,6 +59,16 @@ void scan(Library &library)
         e[i].release.size = sizes[i];
         e[i].release.prerelease = i == 2;
     }
+    // Manta itself, last: the version running, up to date (the tour's steps
+    // count the Updates screen's buttons). EMULAND_SELF_UPDATE=<tag> offers
+    // a newer one.
+    EmulatorState &self = e.back();
+    self.installed = "01.004.000";
+    self.installed_tag = std::string("v") + kVersion;
+    const char *newer = std::getenv("EMULAND_SELF_UPDATE");
+    self.latest = newer != nullptr ? newer : self.installed_tag;
+    self.release.tag = self.latest;
+    self.release.size = 21160152;
     // The games folders of the two installed ones, as their files are named.
     const std::pair<const char *, std::uint64_t> ps1[] = {
         {"Castlevania - Symphony of the Night (USA).chd", 498000000},

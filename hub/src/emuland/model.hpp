@@ -21,8 +21,13 @@ namespace emuland
 
 // Manta's version, as the About screen and the release tag show it. Keep it
 // in step with contentVersion in sce_sys/param.json (1.3.0 is 01.003.000).
-#define MANTA_VERSION "1.3.0"
+#define MANTA_VERSION "1.4.0"
+// Manta's own GitHub repository: its releases update it, and its
+// catalog/online.json adds emulators without a new version.
+#define MANTA_REPO "nagliostro/manta"
 inline constexpr const char *kVersion = MANTA_VERSION;
+inline constexpr const char *kRepo = MANTA_REPO;
+inline constexpr const char *kTitleId = "PPSA98265";
 inline constexpr const char *kUserAgent = "User-Agent: Manta/" MANTA_VERSION " (PS5 homebrew)";
 
 enum class Lang
@@ -105,6 +110,9 @@ struct EmulatorSpec
     // ("--rom", as SwanStationPS5 and PS5CEMU-HAR read it). nullptr: the
     // emulator opens on its own menu, where the user picks the game.
     const char *rom_option = nullptr;
+    // Manta's own entry: it updates like an emulator (Updates screen) but is
+    // not shown on the shelves, in Games or in Folders, and is never removed.
+    bool hidden = false;
 };
 
 inline bool source_only(const EmulatorSpec &emulator)
@@ -112,7 +120,26 @@ inline bool source_only(const EmulatorSpec &emulator)
     return emulator.asset_prefix == nullptr;
 }
 
+// The built-in entries, then those of the online catalog, then Manta itself
+// (hidden). Fixed at the first call: entries are added before it.
 std::span<const EmulatorSpec> catalog();
+
+// The online catalog (catalog/online.json, cached in /data/emuland), applied
+// at start before catalog() is first asked. A new entry is appended; one that
+// names a built-in id may change only where its releases come from.
+// The strings are copied and live as long as the app.
+struct CatalogOverride
+{
+    std::string id;
+    std::string repo;
+    std::string asset_prefix;
+    std::string rom_option;
+    int prerelease = -1; // -1: unchanged
+};
+bool add_catalog_entry(const EmulatorSpec &entry);
+bool override_catalog_entry(const CatalogOverride &change);
+// Keeps a copy of text for as long as the app runs (for an online entry's fields).
+const char *keep_text(const std::string &text);
 
 // The newest release Emuland would install, from GitHub.
 struct Release
@@ -226,6 +253,8 @@ enum class JobError
     copy,         // a file could not be read from the drive or written
     usb_write,    // the USB drive refused a new folder
     none_installed, // prepare: no emulator on the console to make folders for
+    no_loader,      // Manta's update: the ELF loader (port 9021) did not take the helper
+    other_drive,    // Manta's update: it runs from another drive than /data
 };
 
 struct JobStatus
@@ -248,6 +277,8 @@ struct JobStatus
     int checked_minute = 0;
     int retry_hour = -1;    // rate_limited: local time GitHub answers again
     int retry_minute = 0;
+    bool self_staged = false; // Manta's own update is ready: it applies when Manta closes
+    int catalog_new = 0;      // emulators the online catalog adds at the next start
 };
 
 // Asks GitHub for every emulator's newest release. Not forced (the check at

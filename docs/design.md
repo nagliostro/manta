@@ -284,8 +284,22 @@ protótipo no canvas virtual de 1920×1080.
   O RetroArch guarda os dados dentro do app: Manter deixa lá `content`, `system` e `savefiles`.
   A janela de progresso mostra "Desinstalando" com o anel girando, sem Cancelar.
   O ícone da tela inicial só sai com o Emuland fechado: ele mostra "Feche o Emuland para concluir"
-  e deixa um payload esperando (`helper/uninstall_helper.c`, enviado à porta 9021), que pede ao
+  e deixa um payload esperando (`helper/manta_helper.c`, enviado à porta 9021), que pede ao
   ShadowMountPlus para tirar o ícone assim que o Emuland fecha, com um aviso do PS5.
+- **Atualizar o próprio Manta** (padrão do self-update do ps5-native-app-boilerplate e do
+  ProsperoEden): o Manta é a última linha de Atualizações ("Manta · App", com o ícone do M), e
+  "Atualizar todos" o atualiza por último. Ele não aparece nas prateleiras, em Jogos, em Pastas nem
+  nos créditos. A janela de progresso é a mesma dos emuladores ("Atualizando Manta"). No fim, o
+  diálogo "Atualização do Manta pronta" explica que a versão nova entra assim que o app fechar, com
+  "Fechar o Manta" (foco) e "Depois". O `manta_helper` faz a troca depois que o app fecha e o PS5
+  avisa "Manta atualizado para vX.Y.Z. Abra de novo." Até reabrir, a linha já mostra a versão
+  preparada. Sem o ELF loader, o diálogo de erro "ELF loader não respondeu" diz que nada foi
+  mudado. Num Manta que roda de um disco externo, "Manta em outro disco" orienta a atualizar à mão.
+- **Catálogo online** (`catalog/online.json`, formato em `catalog/README.md`): baixado a cada
+  verificação e aplicado ao abrir. Com emulador novo, o aviso "1 emulador novo no catálogo: reabra
+  o Manta para ver" aparece uma vez. Emuladores do catálogo online entram na prateleira do
+  fabricante sem ícone e sem arte (o cartão mostra só o nome e o sistema) até ganharem arte numa
+  versão do app.
 - **Registro no PS5 (ShadowMountPlus):** ele só registra apps novos, ou tira o ícone de um
   desinstalado, com o Emuland fechado. Depois de instalar, o selo vira "Registro pendente" e um
   diálogo "Feche o Emuland para concluir" oferece "Fechar o Emuland" ou "Depois".

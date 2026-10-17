@@ -37,6 +37,9 @@ struct Paths
     bool usb_mounts_only = true;
     // ShadowMountPlus's HTTP API (its docs/api.md); empty: not asked.
     std::string shadowmount = "http://127.0.0.1:10101/api/v1";
+    // Manta's online catalog (catalog/online.json); empty: not fetched.
+    std::string online_catalog =
+        "https://raw.githubusercontent.com/" MANTA_REPO "/main/catalog/online.json";
 };
 
 // Before the first job (the PC test points everything at a scratch folder).
@@ -48,10 +51,14 @@ std::string installed_tag(const char *title_id);
 bool cached_release(std::size_t index, Release &out);
 // Removes the staging folders an interrupted install left in homebrew/.
 void clean_leftovers();
-// Sends the uninstall helper payload (helper/uninstall_helper.c) to the ELF
-// loader: once Emuland closes it asks ShadowMountPlus to take the titles in
-// <state>/uninstall-request.txt off the home screen. True when sent. The PS5
-// side provides it; the PC test answers false.
-bool send_uninstall_helper();
+// Applies the last valid online catalog kept in <state>/catalog.json. Called
+// at start, before anything asks for the catalog. Returns emulators added.
+int load_online_catalog();
+// Sends the helper payload (helper/manta_helper.c) to the ELF loader. Once
+// Manta closes it puts a staged Manta update in place
+// (<state>/self-update-request.txt) and asks ShadowMountPlus to take the
+// titles in <state>/uninstall-request.txt off the home screen. True when
+// sent. The PS5 side provides it; the PC test answers true.
+bool send_helper();
 
 } // namespace emuland::installer

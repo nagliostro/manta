@@ -6,12 +6,14 @@
 #include "core/version.hpp"
 #include "emuland/image.h"
 #include "emuland/model.hpp"
+#include "emuland/online_catalog.hpp"
 
 #include <gtest/gtest.h>
 
 #include <cstring>
 #include <set>
 #include <string>
+#include <utility>
 
 #ifndef HUI_SOURCE_DIR
 #define HUI_SOURCE_DIR "."
@@ -112,4 +114,105 @@ TEST(EmulandImage, RefusesGarbage)
     int height = 0;
     EXPECT_EQ(emuland_decode_image(bytes, static_cast<int>(sizeof(bytes)), &width, &height),
               nullptr);
+}
+
+namespace
+{
+
+// One valid entry; each test breaks one rule of it.
+std::string online_document(const std::string &field, const std::string &value)
+{
+    std::string entry = R"({"id":"meuemu","name":"MeuEmu","short_name":"GBA",)"
+                        R"("system":{"pt":"Game Boy Advance","en":"Game Boy Advance"},)"
+                        R"("maker":"nintendo","author":"fulano","license":"GPL-3.0",)"
+                        R"("repo":"fulano/MeuEmu-PS5","title_id":"PPSA97777","asset_prefix":"MeuEmu-",)"
+                        R"("data":"/data/meuemu","usb":"gba","rom_option":"--rom",)"
+                        R"("description":{"pt":"Emulador.","en":"Emulator."},)"
+                        R"("folders":[{"key":"jogos","name":{"pt":"Jogos","en":"Games"},)"
+                        R"("path":"games","games":true,"extensions":"gba,zip"}]})";
+    if (!field.empty())
+    {
+        const std::string key = "\"" + field + "\":";
+        const std::size_t at = entry.find(key);
+        const std::size_t start = at + key.size();
+        const std::size_t end = entry[start] == '"' ? entry.find('"', start + 1) + 1
+                                                    : entry.find_first_of(",}", start);
+        entry.replace(start, end - start, value);
+    }
+    return R"({"schema":1,"emulators":[)" + entry +
+           R"(],"changes":[{"id":"psxs5","repo":"SynoPiia/PSXS5"}]})";
+}
+
+} // namespace
+
+TEST(EmulandOnlineCatalog, AcceptsAValidEntry)
+{
+    emuland::OnlineCatalog catalog;
+    std::string error;
+    ASSERT_TRUE(emuland::parse_online_catalog(online_document("", ""), catalog, error)) << error;
+    ASSERT_EQ(catalog.emulators.size(), 1u);
+    EXPECT_EQ(catalog.emulators[0].data, "/data/meuemu");
+    EXPECT_EQ(catalog.emulators[0].maker, 1);
+    ASSERT_EQ(catalog.changes.size(), 1u);
+    EXPECT_EQ(emuland::new_online_entries(catalog), 1);
+}
+
+TEST(EmulandOnlineCatalog, RefusesDangerousOrMalformedEntries)
+{
+    const std::pair<const char *, const char *> broken[] = {
+        {"data", R"("/data")"},
+        {"data", R"("/data/homebrew")"},
+        {"data", R"("/data/emuland")"},
+        {"data", R"("/data/../etc")"},
+        {"data", R"("/user/meuemu")"},
+        {"title_id", R"("PPSA98265")"}, // Manta's own
+        {"title_id", R"("ppsa97777")"},
+        {"repo", R"("fulano")"},
+        {"repo", R"("fulano/../x")"},
+        {"id", R"("Meu Emu")"},
+        {"rom_option", R"("; rm -rf")"},
+        {"maker", R"("sega")"},
+        {"path", R"("../games")"},
+        {"path", R"("/games")"},
+    };
+    for (const auto &[field, value] : broken)
+    {
+        emuland::OnlineCatalog catalog;
+        std::string error;
+        EXPECT_FALSE(emuland::parse_online_catalog(online_document(field, value), catalog, error))
+            << field << " = " << value;
+    }
+    emuland::OnlineCatalog catalog;
+    std::string error;
+    EXPECT_FALSE(emuland::parse_online_catalog("not json", catalog, error));
+    EXPECT_FALSE(emuland::parse_online_catalog(R"({"schema":9})", catalog, error));
+}
+
+TEST(EmulandOnlineCatalog, LeavesOutEntriesForANewerManta)
+{
+    std::string document = online_document("", "");
+    document.replace(document.find("\"id\":\"meuemu\""), 0, "\"min_version\":\"99.0.0\",");
+    emuland::OnlineCatalog catalog;
+    std::string error;
+    ASSERT_TRUE(emuland::parse_online_catalog(document, catalog, error)) << error;
+    EXPECT_TRUE(catalog.emulators.empty());
+}
+
+TEST(EmulandOnlineCatalog, RepositoryFileIsValid)
+{
+    std::string text;
+    ASSERT_TRUE(hui::save::read_file(HUI_SOURCE_DIR "/../catalog/online.json", &text));
+    emuland::OnlineCatalog catalog;
+    std::string error;
+    EXPECT_TRUE(emuland::parse_online_catalog(text, catalog, error)) << error;
+}
+
+TEST(EmulandCatalog, MantaIsLastAndHidden)
+{
+    const auto entries = emuland::catalog();
+    ASSERT_FALSE(entries.empty());
+    EXPECT_TRUE(entries.back().hidden);
+    EXPECT_STREQ(entries.back().title_id, emuland::kTitleId);
+    for (std::size_t i = 0; i + 1 < entries.size(); ++i)
+        EXPECT_FALSE(entries[i].hidden);
 }

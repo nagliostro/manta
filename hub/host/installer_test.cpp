@@ -31,9 +31,10 @@ extern "C" void emuland_net_setup(CURL *easy)
 
 namespace emuland
 {
-bool installer::send_uninstall_helper()
+bool g_loader = true; // whether the ELF loader "takes" the helper
+bool installer::send_helper()
 {
-    return false; // no console here
+    return g_loader; // no console here: only whether it was asked
 }
 
 void local_time(int *hour, int *minute)
@@ -131,6 +132,7 @@ int main(int argc, char **argv)
     paths.sandboxes = root + "/mnt/sandbox";
     paths.data = root + "/data";
     paths.shadowmount.clear(); // no ShadowMountPlus on a PC
+    paths.online_catalog.clear(); // nothing fetched from Manta's repository here
     for (const std::string &dir : {root + "/data", paths.homebrew, paths.registered,
                                    paths.registered + "/app", root + "/mnt", paths.sandboxes})
         mkdir(dir.c_str(), 0777);
@@ -147,6 +149,8 @@ int main(int argc, char **argv)
         std::printf("    %s: %s %s %llu bytes %s\n", emuland::catalog()[i].name, release.tag.c_str(),
                     release.asset.c_str(), static_cast<unsigned long long>(release.size),
                     release.digest.c_str());
+        if (emuland::catalog()[i].hidden)
+            continue; // Manta's own repository: may have no release yet
         if (emuland::source_only(emuland::catalog()[i]))
             expect(!found, "source only: nothing looked up");
         else
@@ -209,7 +213,7 @@ int main(int argc, char **argv)
     for (std::size_t i = 3; i < emuland::catalog().size(); ++i)
     {
         const emuland::EmulatorSpec &spec = emuland::catalog()[i];
-        if (emuland::source_only(spec) || std::string(spec.id) == "retroarch")
+        if (emuland::source_only(spec) || spec.hidden || std::string(spec.id) == "retroarch")
             continue;
         emuland::start_install(static_cast<int>(i));
         status = wait_job(status.finished);

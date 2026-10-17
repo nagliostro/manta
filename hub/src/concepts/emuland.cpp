@@ -297,6 +297,27 @@ struct Strings
                          "copiados ficaram.",
                          "A file could not be read from the USB drive or written to the "
                          "console. The ones already copied stay."};
+    Text error_loader{"ELF loader não respondeu", "The ELF loader did not answer"};
+    Text error_loader_text{"O Manta usa o ELF loader (porta 9021, do etaHEN ou LegacyJB) para trocar "
+                           "os próprios arquivos depois de fechar. Ligue-o e tente de novo. Nada "
+                           "foi mudado.",
+                           "Manta uses the ELF loader (port 9021, from etaHEN or LegacyJB) to "
+                           "replace its own files after it closes. Turn it on and try again. "
+                           "Nothing was changed."};
+    Text error_drive{"Manta em outro disco", "Manta on another drive"};
+    Text error_drive_text{"Este Manta roda de um disco externo e não pode se atualizar sozinho. "
+                          "Baixe a versão nova no GitHub e copie por cima da pasta.",
+                          "This Manta runs from an external drive and can't update itself. "
+                          "Download the new version from GitHub and copy it over the folder."};
+    Text self_ready_title{"Atualização do Manta pronta", "Manta update ready"};
+    Text self_ready_text{"A versão nova entra no lugar assim que o Manta fechar. Depois, é só "
+                         "abrir de novo: o PS5 avisa quando terminar.",
+                         "The new version goes in place as soon as Manta closes. Then just "
+                         "open it again: the PS5 tells you when it is done."};
+    Text catalog_new_one{"emulador novo no catálogo: reabra o Manta para ver",
+                         "new emulator in the catalog: reopen Manta to see it"};
+    Text catalog_new_many{"emuladores novos no catálogo: reabra o Manta para ver",
+                          "new emulators in the catalog: reopen Manta to see them"};
     Text error_limit{"Limite do GitHub atingido", "GitHub limit reached"};
     Text error_limit_text{"Sem conta, o GitHub aceita poucas consultas por hora. As versões já "
                           "conhecidas continuam valendo.",
@@ -558,12 +579,12 @@ class Emuland final : public app::Concept
         int start = 0;
         for (int i = count - 1; i >= 0; --i)
         {
-            if (emuland::installed(static_cast<std::size_t>(i)))
+            if (shown(i) && emuland::installed(static_cast<std::size_t>(i)))
                 start = i;
         }
         for (int i = count - 1; i >= 0; --i)
         {
-            if (emuland::has_update(static_cast<std::size_t>(i)))
+            if (shown(i) && emuland::has_update(static_cast<std::size_t>(i)))
                 start = i;
         }
         selected_ = start;
@@ -706,6 +727,18 @@ class Emuland final : public app::Concept
     {
         return emuland::has_update(static_cast<std::size_t>(index));
     }
+    // Manta's own entry lives only on the Updates screen.
+    static bool shown(int index)
+    {
+        return !spec(index).hidden;
+    }
+    static int credited()
+    {
+        int n = 0;
+        for (int i = 0; i < emulator_count(); ++i)
+            n += shown(i) ? 1 : 0;
+        return n;
+    }
     static int update_count()
     {
         int n = 0;
@@ -844,7 +877,7 @@ class Emuland final : public app::Concept
         Shelf library{&kS.row_library, {}};
         for (int i = 0; i < emulator_count(); ++i)
         {
-            if (is_installed(i))
+            if (shown(i) && is_installed(i))
                 library.tiles.push_back({TileKind::emulator, i, 0});
         }
         if (!library.tiles.empty())
@@ -855,7 +888,7 @@ class Emuland final : public app::Concept
         Shelf news{&kS.row_news, {}};
         for (int i = 0; i < emulator_count(); ++i)
         {
-            if (update_for(i))
+            if (shown(i) && update_for(i))
                 news.tiles.push_back({TileKind::news, i, 0});
         }
         if (!news.tiles.empty())
@@ -871,7 +904,7 @@ class Emuland final : public app::Concept
             Shelf shelf{title, {}};
             for (int i = 0; i < emulator_count(); ++i)
             {
-                if (spec(i).maker == maker)
+                if (shown(i) && spec(i).maker == maker)
                     shelf.tiles.push_back({TileKind::emulator, i, 0});
             }
             if (!shelf.tiles.empty())
@@ -880,7 +913,7 @@ class Emuland final : public app::Concept
         Shelf folders{&kS.row_folders, {}};
         for (int i = 0; i < emulator_count(); ++i)
         {
-            if (!is_installed(i))
+            if (!shown(i) || !is_installed(i))
                 continue;
             const EmulatorSpec &emulator = spec(i);
             for (std::size_t f = 0; f < emulator.folders.size(); ++f)
@@ -1140,7 +1173,7 @@ class Emuland final : public app::Concept
         float x = kMargin;
         for (int i = 0; i < emulator_count(); ++i)
         {
-            if (!is_installed(i) && i != folder_emulator_)
+            if (!shown(i) || (!is_installed(i) && i != folder_emulator_))
                 continue;
             Item tab;
             tab.act = Act::pick_emulator;
@@ -1172,12 +1205,13 @@ class Emuland final : public app::Concept
              Look::button, -1, -1, L(kS.prepare_usb)});
     }
 
-    std::vector<int> installed_list() const
+    // with_self: Manta's own row too (the Updates screen).
+    std::vector<int> installed_list(bool with_self = false) const
     {
         std::vector<int> list;
         for (int i = 0; i < emulator_count(); ++i)
         {
-            if (is_installed(i))
+            if (is_installed(i) && (with_self || shown(i)))
                 list.push_back(i);
         }
         return list;
@@ -1212,7 +1246,7 @@ class Emuland final : public app::Concept
         Item check{Act::check_updates, 0, 0, {}, Look::button, -1, -1, L(kS.check_now)};
         check.rect = {x, 362, button_width(check.label, false), kButtonH};
         add(check);
-        const std::vector<int> rows = installed_list();
+        const std::vector<int> rows = installed_list(true);
         for (std::size_t r = 0; r < rows.size(); ++r)
         {
             const int i = rows[r];
@@ -1978,6 +2012,10 @@ class Emuland final : public app::Concept
             return L(kS.error_no_space);
         case emuland::JobError::copy:
             return L(kS.error_copy);
+        case emuland::JobError::no_loader:
+            return L(kS.error_loader);
+        case emuland::JobError::other_drive:
+            return L(kS.error_drive);
         default:
             return L(kS.error_install);
         }
@@ -2009,6 +2047,10 @@ class Emuland final : public app::Concept
             return L(kS.error_no_space_text);
         case emuland::JobError::copy:
             return L(kS.error_copy_text);
+        case emuland::JobError::no_loader:
+            return L(kS.error_loader_text);
+        case emuland::JobError::other_drive:
+            return L(kS.error_drive_text);
         default:
             return L(kS.error_install_text);
         }
@@ -2072,6 +2114,13 @@ class Emuland final : public app::Concept
                 open_dialog(L(kS.unregister_title), L(kS.unregister_text),
                             {{L(kS.close_now), kDialogQuit}, {L(kS.later), 0}});
         }
+        else if (job_.stage == emuland::Stage::done && install && was >= 0 && spec(was).hidden)
+        {
+            // Manta's own update waits for it to close (the helper applies it).
+            play(audio::Cue::complete);
+            open_dialog(L(kS.self_ready_title), L(kS.self_ready_text),
+                        {{L(kS.close_now), kDialogQuit}, {L(kS.later), 0}});
+        }
         else if (job_.stage == emuland::Stage::done && install && was >= 0)
         {
             char text[128];
@@ -2103,6 +2152,15 @@ class Emuland final : public app::Concept
         }
         if (!install)
             manual_check_ = false;
+        // Once per start: the online catalog brought emulators this run lacks.
+        if (job_.catalog_new > 0 && !catalog_told_ && !dialog_.open)
+        {
+            catalog_told_ = true;
+            char text[128];
+            std::snprintf(text, sizeof(text), "%d %s", job_.catalog_new,
+                          L(job_.catalog_new == 1 ? kS.catalog_new_one : kS.catalog_new_many));
+            toast(text);
+        }
     }
 
     // ---------------------------------------------------------------- dialog, toast, launch
@@ -3402,7 +3460,7 @@ class Emuland final : public app::Concept
         else
             lead = L(kS.never_checked);
         ui::text(list, fonts.regular, lead, kMargin, 322, 28, kText2);
-        const std::vector<int> rows = installed_list();
+        const std::vector<int> rows = installed_list(true);
         if (rows.empty())
             ui::text(list, fonts.regular, L(kS.none_installed), kMargin, 520, 28, kText2);
         for (std::size_t row = 0; row < rows.size(); ++row)
@@ -3515,7 +3573,7 @@ class Emuland final : public app::Concept
             ui::paragraph_lines(fonts.regular, dialog_.body, 28, 912, 12);
         float height = 56 + 64 + 18 + static_cast<float>(body.lines.size()) * 40 + 44 + kButtonH + 56;
         if (dialog_.credits)
-            height += 40 + static_cast<float>(emulator_count()) * 60 + 50;
+            height += 40 + static_cast<float>(credited()) * 60 + 50;
         const Rect d{440, 540 - height * 0.5f + 24.0f * (1.0f - t), 1040, height};
         list.shadow({d.x, d.y + 20, d.w, d.h}, 40, 60, Color::rgb(0x000000, 0.5f));
         list.bordered_rect(d, 40, kSurface, 1, kLine);
@@ -3528,6 +3586,8 @@ class Emuland final : public app::Concept
             y += 10;
             for (int i = 0; i < emulator_count(); ++i)
             {
+                if (!shown(i))
+                    continue;
                 if (const std::uint32_t texture = icon_of(i))
                     list.image(texture, {d.x + 64, y - 6, 44, 44}, gfx::kFullUv, kText, 12);
                 ui::text(list, fonts.semibold, spec(i).name, d.x + 128, y + 26, 24, kText);
@@ -3916,6 +3976,7 @@ class Emuland final : public app::Concept
     float prepare_since_ = 0.0f;
     emuland::JobStatus prepare_result_;
     bool manual_check_ = false;
+    bool catalog_told_ = false;
     int install_label_ = 0;
 };
 

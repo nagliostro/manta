@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="../../releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/OWNER/manta?label=vers%C3%A3o"></a>
+  <a href="../../releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/nagliostro/manta?label=vers%C3%A3o"></a>
   <img alt="Plataforma" src="https://img.shields.io/badge/plataforma-PS5%20homebrew-1E3A5F">
   <a href="LICENSE"><img alt="Licença" src="https://img.shields.io/badge/licen%C3%A7a-GPL--3.0-5B6878"></a>
 </p>
@@ -54,6 +54,8 @@ O Manta junta tudo isso em **um app só, no próprio console**:
 | **Pastas** | Mostra cada pasta de cada emulador (jogos, BIOS, cheats, saves…), quantos arquivos tem e o que está faltando. Cria as que não existem. |
 | **Importar do pendrive** | Copia de `Manta/<sistema>/<pasta>/` no pendrive ou HD externo para o lugar certo no console. Só copia: nada é apagado, e o que já está lá é pulado. |
 | **Preparar pendrive** | Cria no pendrive a árvore de pastas dos emuladores instalados, com um `LEIA-ME.txt` dizendo o que vai em cada uma. |
+| **Atualiza a si mesmo** | Uma versão nova do Manta aparece em Atualizações, como a dos emuladores. Ele baixa, confere e aplica a troca assim que você fecha o app. |
+| **Catálogo online** | Emuladores novos chegam ao Manta sem precisar de versão nova do app: o catálogo vem do [`catalog/online.json`](catalog/online.json) deste repositório. |
 | **Bilíngue** | Português e inglês, seguindo o idioma do console (ou escolha em Ajustes). |
 | **Feito para a TV** | Interface no estilo de streaming, 60 fps, 4K, sons e movimento suaves, opção de reduzir movimento, contraste AA. |
 
@@ -100,48 +102,47 @@ Testado em: firmware 13.60, LegacyJB + kstuff + ShadowMountPlus.
 
 ## Instalação
 
-### 1. Baixe o Manta
+Na página de [**Releases**](../../releases/latest) há dois jeitos de instalar. Escolha um.
 
-Na página de [**Releases**](../../releases/latest), baixe `Manta-vX.Y.Z-PPSA98265.zip` e
-extraia. Você terá uma pasta chamada **`PPSA98265`**.
+### Opção 1 — instalador `.elf` (recomendado, sem FTP)
 
-> Para conferir o download: o arquivo `SHA256SUMS.txt` da release traz o hash do ZIP
-> (`certutil -hashfile Manta-v1.3.0-PPSA98265.zip SHA256` no Windows,
-> `sha256sum` no Linux/macOS).
+1. Baixe **`Manta-vX.Y.Z-installer.elf`**.
+2. Envie o arquivo para o **ELF loader** do PS5 (porta **9021**), do mesmo jeito que você envia
+   outros payloads:
+   - do PC: `python scripts/send-elf.py <IP-do-PS5> Manta-vX.Y.Z-installer.elf`
+     ou um app como o NetCat GUI;
+   - ou pelo menu de payloads do seu HEN, se ele carregar `.elf` de um pendrive.
+3. O PS5 avisa "Manta X.Y.Z instalado". Em instantes o **Manta** aparece na tela inicial.
 
-### 2. Copie para o PS5
+O instalador já leva o app dentro dele: não precisa de internet. Se o Manta estiver aberto, ele
+espera você fechar.
 
-Com o PS5 desbloqueado e o FTP ligado, copie **a pasta inteira** `PPSA98265` para
-`/data/homebrew/` no console. O resultado deve ser:
+### Opção 2 — ZIP por FTP
 
-```
-/data/homebrew/PPSA98265/eboot.bin
-/data/homebrew/PPSA98265/sce_sys/...
-/data/homebrew/PPSA98265/assets/...
-```
+1. Baixe **`Manta-vX.Y.Z-PPSA98265.zip`** e extraia. Você terá uma pasta chamada **`PPSA98265`**.
+2. Com o FTP ligado, copie **a pasta inteira** para `/data/homebrew/` no console, para ficar
+   `/data/homebrew/PPSA98265/eboot.bin`, `.../sce_sys/`, `.../assets/`.
+   - **Cliente FTP** (FileZilla, WinSCP…): conecte em `IP-do-PS5`, porta `2121`, usuário anônimo,
+     envie a pasta e dê permissão `777` a ela e a tudo dentro.
+   - **Script** (Python 3): `python scripts/deploy-ps5.py <IP-do-PS5> --folder caminho/para/PPSA98265`
+     envia tudo já com as permissões certas.
+3. Espere alguns segundos: o ShadowMountPlus registra o app e o **Manta** aparece na tela inicial.
 
-**Opção A — cliente FTP (FileZilla, WinSCP…):** conecte em `IP-do-PS5`, porta `2121`, usuário
-anônimo. Envie a pasta e, se o seu cliente permitir, dê permissão `777` a ela e a tudo dentro.
+> O IP do PS5 está em **Configurações › Rede › Status da conexão**. Para conferir um download, o
+> `SHA256SUMS.txt` da release traz o hash de cada arquivo (`certutil -hashfile <arquivo> SHA256`
+> no Windows, `sha256sum` no Linux/macOS).
 
-**Opção B — script (Windows/Linux/macOS, precisa de Python 3):** baixe este repositório e rode
-
-```bash
-python scripts/deploy-ps5.py <IP-do-PS5> --folder caminho/para/PPSA98265
-```
-
-Ele envia tudo, já com as permissões certas.
-
-> O IP do PS5 está em **Configurações › Rede › Status da conexão**.
-
-### 3. Abra
-
-Espere alguns segundos: o ShadowMountPlus registra o app e o **Manta** aparece na tela inicial.
-Abra-o. Na primeira vez ele pede acesso a `/data` ao HEN e procura as versões mais novas dos
+Na primeira vez, o Manta pede acesso a `/data` ao HEN e procura as versões mais novas dos
 emuladores.
 
 ### Atualizar o Manta
 
-Repita os passos 1 e 2 com o ZIP novo, por cima da pasta antiga (feche o Manta antes). Seus
+**Pelo próprio Manta:** quando sai uma versão nova, ela aparece em **Atualizações** (linha
+"Manta"). Aperte **Atualizar**. O Manta baixa e confere a versão nova, depois pede para você
+fechar o app. Assim que você fecha, a troca é feita e o PS5 avisa "Manta atualizado para vX.Y.Z".
+É só abrir de novo. Isso usa o ELF loader (porta 9021).
+
+**Sem o ELF loader:** envie o instalador `.elf` novo, ou copie o ZIP novo por cima da pasta. Seus
 emuladores, jogos e ajustes não são tocados.
 
 ### Desinstalar o Manta
@@ -218,8 +219,13 @@ por IP. O Manta guarda a última resposta e avisa a hora em que dá para tentar 
 **O Manta apaga alguma coisa sem eu pedir?** Não. Importar só copia, atualizar guarda a versão
 anterior até a nova estar no lugar, e desinstalar pergunta se você quer manter seus arquivos.
 
-**Onde fica o log?** Em `/data/emuland/hub.log` (o da execução anterior em `hub.prev.log`). Anexe
-ao abrir uma issue.
+**Onde fica o log?** Em `/data/emuland/hub.log` (o da execução anterior em `hub.prev.log`). O
+instalador `.elf` escreve em `manta-installer.log`, e a troca de versão e as desinstalações em
+`manta-helper.log`, todos na mesma pasta. Anexe ao abrir uma issue.
+
+**Quero sugerir um emulador para o catálogo.** Abra uma issue ou um pull request no
+[`catalog/online.json`](catalog/online.json) ([formato](catalog/README.md)). Depois de aceito, ele
+aparece para todos sem versão nova do Manta.
 
 ## Segurança
 
@@ -229,6 +235,10 @@ ao abrir uma issue.
   links simbólicos, limite de tamanho e de memória.
 - O Manta só remove a pasta de um app depois de confirmar que ela é mesmo daquele app.
 - Imagens (capas) com dimensões absurdas são recusadas antes de decodificar.
+- O catálogo online passa por validação rígida: um emulador só pode usar uma pasta de dados
+  própria em `/data/<nome>`, e um documento com qualquer regra quebrada é ignorado por inteiro.
+- A troca de versão do próprio Manta só aceita a pasta que o Manta preparou e só grava na pasta
+  do Manta. Se algo falhar no meio, a versão anterior volta.
 
 Encontrou uma falha? Abra uma issue (ou, se for sensível, entre em contato pelo perfil do
 mantenedor antes de divulgar).
@@ -248,6 +258,20 @@ python scripts/deploy-ps5.py <IP-do-PS5> --log   # traz /data/emuland/hub.log pa
 bash scripts/build-ps5.sh
 ```
 
+O build gera também `hub/dist/manta-installer.elf` (o instalador de um passo, com o ZIP dentro).
+
+**Publicar uma versão:** mude `MANTA_VERSION` em `hub/src/emuland/model.hpp` e `contentVersion` em
+`hub/sce_sys/param.json` (um teste confere que batem), escreva a entrada do `CHANGELOG.md` (e, se
+quiser, `docs/RELEASE-vX.Y.Z.md`), faça o commit e envie a tag:
+
+```bash
+git tag v1.4.0 && git push origin main v1.4.0
+```
+
+O GitHub Actions ([`release.yml`](.github/workflows/release.yml)) compila, roda os testes e publica
+a release com o ZIP, o instalador `.elf` e o `SHA256SUMS.txt`. Os Mantas já instalados veem a
+versão nova em Atualizações.
+
 Na primeira vez, o build baixa o SDK de payloads do PS5, o ps5-opengl e o libcurl (PacBrew).
 
 **Prévia no PC** (sem console): `wsl -- bash scripts/hub-preview.sh <pasta>` renderiza todas as
@@ -261,8 +285,9 @@ hub/        o app (C++20, OpenGL 4.6 pelo kit ps5-homebrew-ui)
   src/emuland/                  catálogo, biblioteca de jogos, artes
   src/platform/ps5/             instalador, capas, lançador, acesso a /data
   host/                         versão de PC para prévia e testes
-helper/     payload que tira do menu o ícone de um emulador desinstalado
-catalog/    o catálogo em JSON (espelho do que está embutido no app)
+helper/     payloads: manta_helper (troca de versão, ícones de desinstalados) e o instalador .elf
+catalog/    online.json (catálogo online) e emuladores.json (espelho do embutido)
+.github/    build e publicação automáticos de cada versão
 scripts/    build, envio por FTP e prévia
 docs/       design (fonte de verdade da interface), plano, identidade visual
 ```

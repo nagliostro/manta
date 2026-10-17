@@ -287,6 +287,20 @@ void scan(Library &library)
         EmulatorState &state = library.emulators[i];
         state.installed = installed_version(spec.title_id);
         state.installed_tag = installer::installed_tag(spec.title_id);
+        if (spec.hidden)
+        {
+            // Manta is the version running, or the one staged to replace it
+            // when it closes (third line of the request).
+            state.installed_tag = std::string("v") + kVersion;
+            const std::string request = read_small("/data/emuland/self-update-request.txt");
+            const std::size_t first = request.find('\n');
+            const std::size_t second =
+                first == std::string::npos ? first : request.find('\n', first + 1);
+            const std::size_t third =
+                second == std::string::npos ? second : request.find('\n', second + 1);
+            if (third != std::string::npos && third > second + 1)
+                state.installed_tag = request.substr(second + 1, third - second - 1);
+        }
         state.registered = state.installed.empty() || registered(spec);
         Release release;
         if (installer::cached_release(i, release))
@@ -331,10 +345,10 @@ void scan(Library &library)
 // The system won't load libSceAppInstUtil into an app (0x80020063, and a
 // linked import took Emuland down): the helper runs in the ELF loader's
 // process instead. Its ELF ships in the app's assets.
-bool installer::send_uninstall_helper()
+bool installer::send_helper()
 {
-    const char *const places[] = {"/app0/assets/helpers/uninstall_helper.elf",
-                                  "/data/homebrew/PPSA98265/assets/helpers/uninstall_helper.elf"};
+    const char *const places[] = {"/app0/assets/helpers/manta_helper.elf",
+                                  "/data/homebrew/PPSA98265/assets/helpers/manta_helper.elf"};
     std::FILE *file = nullptr;
     for (const char *place : places)
     {
@@ -343,7 +357,7 @@ bool installer::send_uninstall_helper()
     }
     if (file == nullptr)
     {
-        hui::sys::log("[EMULAND] uninstall helper not found");
+        hui::sys::log("[EMULAND] helper payload not found");
         return false;
     }
     std::vector<char> elf;
@@ -373,7 +387,7 @@ bool installer::send_uninstall_helper()
             sent = false;
     }
     close(sock);
-    hui::sys::log("[EMULAND] uninstall helper %zu bytes to 127.0.0.1:9021 sent=%d", elf.size(),
+    hui::sys::log("[EMULAND] helper %zu bytes to 127.0.0.1:9021 sent=%d", elf.size(),
                   sent ? 1 : 0);
     return sent;
 }

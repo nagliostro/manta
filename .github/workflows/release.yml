@@ -1,0 +1,98 @@
+# Manta - Build, test and publish a release for each version tag (v1.3.0, v1.4.0, ...).
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Push a tag and the release appears with:
+#   Manta-vX.Y.Z-PPSA98265.zip      the app folder (FTP install, and Manta's self-update)
+#   Manta-vX.Y.Z-installer.elf      the one-step installer (send to port 9021)
+#   SHA256SUMS.txt
+# The notes come from docs/RELEASE-vX.Y.Z.md when it exists, else from CHANGELOG.md.
+
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+  workflow_dispatch: # a test build: artifacts only, no release
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build and publish
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install native toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes clang-18 lld-18 make ninja-build ccache pkg-config tar unzip zip wget rsync
+
+      - name: Read the version
+        id: version
+        run: |
+          version=$(sed -n 's/^#define MANTA_VERSION "\(.*\)"/\1/p' hub/src/emuland/model.hpp)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if [ "${GITHUB_REF_TYPE}" = tag ] && [ "${GITHUB_REF_NAME}" != "v$version" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match MANTA_VERSION $version (hub/src/emuland/model.hpp)"
+            exit 1
+          fi
+
+      - name: Restore dependencies
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: |
+            ~/emuland/hub/.deps/native
+            ~/emuland/hub/.deps/test
+            ~/emuland/hub/.deps/pacbrew
+            ~/emuland/hub/.deps/ps5-opengl
+          key: manta-deps-${{ runner.os }}-${{ hashFiles('hub/tools/setup-*-dependencies.sh', 'hub/tools/fetch-opengl-sdk.sh') }}
+
+      - name: Build the app and the payloads
+        run: bash scripts/build-ps5.sh
+
+      - name: Run the tests
+        run: |
+          export PATH=/usr/lib/llvm-18/bin:$PATH
+          rsync -a --delete catalog/ ~/emuland/catalog/
+          make -C ~/emuland/hub test-unit
+          bash ~/emuland/hub/tools/installer-test.sh
+
+      - name: Package
+        id: package
+        run: |
+          version=${{ steps.version.outputs.version }}
+          mkdir -p release
+          cp hub/dist/PPSA98265.zip "release/Manta-v$version-PPSA98265.zip"
+          cp hub/dist/manta-installer.elf "release/Manta-v$version-installer.elf"
+          (cd release && sha256sum Manta-* > SHA256SUMS.txt && cat SHA256SUMS.txt)
+          notes="docs/RELEASE-v$version.md"
+          if [ ! -f "$notes" ]; then
+            notes="$RUNNER_TEMP/notes.md"
+            awk -v v="## [$version]" 'index($0, v) == 1 {on = 1; next} /^## / && on {exit} on' CHANGELOG.md > "$notes"
+          fi
+          echo "notes=$notes" >> "$GITHUB_OUTPUT"
+
+      - name: Keep the files of this run
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: manta-${{ steps.version.outputs.version }}
+          path: release/
+
+      - name: Publish the release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" release/* \
+            --title "Manta ${GITHUB_REF_NAME}" \
+            --notes-file "${{ steps.package.outputs.notes }}" \
+            --verify-tag

@@ -22,6 +22,6 @@ for source in "$root"/src/third_party/miniz/*.c "$root"/src/platform/ps5/install
 done
 "$cxx" -std=c++20 -O1 -g -Wall -Wextra -fsanitize=address,undefined -I"$root/src" \
     "$root/host/installer_test.cpp" "$root/host/platform_host.cpp" "$root/src/emuland/model.cpp" \
-    "$root"/src/platform/ps5/installer/{installer,archive,files,json}.cpp \
+    "$root"/src/platform/ps5/installer/{installer,archive,files}.cpp "$root"/src/emuland/{json,online_catalog}.cpp \
     "${objects[@]}" -lcurl -pthread -fsanitize=address,undefined -o "$out/installer_test"
 "$out/installer_test" "$scratch"

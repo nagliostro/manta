@@ -49,3 +49,4 @@ desktop.ini
 
 # Release files made for GitHub (attach them to the release, do not commit)
 /release/
+helper/build/

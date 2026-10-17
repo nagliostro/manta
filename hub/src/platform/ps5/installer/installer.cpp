@@ -26,7 +26,8 @@
 
 #include "platform/ps5/installer/archive.hpp"
 #include "platform/ps5/installer/files.hpp"
-#include "platform/ps5/installer/json.hpp"
+#include "emuland/json.hpp"
+#include "emuland/online_catalog.hpp"
 #include "platform/ps5/installer/self_update_sha256.h"
 #include "platform/ps5/system.hpp"
 
@@ -118,6 +119,11 @@ std::string releases_file()
 std::string check_file()
 {
     return g_paths.state + "/check.txt";
+}
+
+std::string self_update_request()
+{
+    return g_paths.state + "/self-update-request.txt";
 }
 
 std::string record_file(const char *title_id)
@@ -712,6 +718,44 @@ bool on_console(const char *title_id)
            stat((g_paths.homebrew + "/" + title_id).c_str(), &info) == 0;
 }
 
+// catalog/online.json from Manta's repository (raw.githubusercontent.com,
+// which GitHub's API limit does not count): kept when valid, applied at the
+// next start. Best effort: a failure leaves the last copy in place.
+void fetch_online_catalog()
+{
+    if (g_paths.online_catalog.empty())
+        return;
+    std::string body;
+    Sink sink;
+    sink.body = &body;
+    sink.limit = 256u << 10;
+    std::string detail;
+    if (fetch(g_paths.online_catalog, sink, false, detail) != 0)
+    {
+        note("[EMULAND] online catalog: %s", detail.c_str());
+        return;
+    }
+    OnlineCatalog parsed;
+    std::string error;
+    if (!parse_online_catalog(body, parsed, error))
+    {
+        note("[EMULAND] online catalog refused: %s", error.c_str());
+        return;
+    }
+    const std::string file = g_paths.state + "/catalog.json";
+    if (read_text(file) != body)
+    {
+        mkdir(g_paths.state.c_str(), 0777);
+        if (!write_text(file, body))
+            note("[EMULAND] could not save %s", file.c_str());
+    }
+    const int fresh = new_online_entries(parsed);
+    note("[EMULAND] online catalog: %zu emulators, %zu changes, %d new", parsed.emulators.size(),
+         parsed.changes.size(), fresh);
+    std::lock_guard lock(g_mutex);
+    g_status.catalog_new = fresh;
+}
+
 // forced: asked for on the Updates screen; otherwise the check at start, which
 // keeps the last answer while it is recent or GitHub's limit holds.
 JobError run_check(bool forced, std::string &detail)
@@ -733,6 +777,7 @@ JobError run_check(bool forced, std::string &detail)
             return JobError::none;
         }
     }
+    fetch_online_catalog();
     // Installed ones first: if GitHub's limit cuts the check short, their
     // updates are what was worth knowing (the rest look again on install).
     std::vector<std::size_t> order;
@@ -768,6 +813,10 @@ JobError run_check(bool forced, std::string &detail)
             std::lock_guard lock(g_mutex);
             g_releases[i] = release;
         }
+        else if (catalog()[i].hidden && error != JobError::rate_limited)
+        {
+            // Manta's repository without a release yet: not a failed check.
+        }
         else if (worst == JobError::none || error == JobError::rate_limited)
         {
             worst = error;
@@ -785,6 +834,33 @@ JobError run_check(bool forced, std::string &detail)
         save_check_locked();
     }
     return worst;
+}
+
+// Manta's own update, unpacked and ready: the helper payload puts it in
+// place once Manta has closed (an app can't replace its running files), as
+// the template's self-update does. The request names what goes where.
+JobError hand_over_self_update(const std::string &staged, const std::string &target,
+                               const Release &release, std::string &detail)
+{
+    if (!write_text(self_update_request(), staged + "\n" + target + "\n" + release.tag + "\n"))
+    {
+        detail = "cannot write " + self_update_request();
+        self_update::remove_tree(staged);
+        return JobError::install;
+    }
+    if (!installer::send_helper())
+    {
+        std::remove(self_update_request().c_str());
+        self_update::remove_tree(staged);
+        detail = "the ELF loader on 127.0.0.1:9021 did not take the helper";
+        return JobError::no_loader;
+    }
+    note("[EMULAND] Manta %s staged in %s, applies when Manta closes", release.tag.c_str(),
+         staged.c_str());
+    std::lock_guard lock(g_mutex);
+    g_status.self_staged = true;
+    g_status.needs_close = true;
+    return JobError::none;
 }
 
 JobError run_install(std::size_t index, std::string &detail)
@@ -805,7 +881,8 @@ JobError run_install(std::size_t index, std::string &detail)
         g_releases[index] = release;
         save_releases_locked();
     }
-    if (title_running(spec.title_id))
+    // Manta itself is always running: its files change once it has closed.
+    if (!spec.hidden && title_running(spec.title_id))
     {
         detail = std::string(spec.name) + " is running";
         return JobError::running;
@@ -893,8 +970,14 @@ JobError run_install(std::size_t index, std::string &detail)
     // Staged outside homebrew, which ShadowMountPlus scans: a half-made app
     // there has a param.json it may pick up. A rename needs one filesystem, so
     // next to the destination otherwise.
-    const std::string staging = g_paths.state + "/staging";
+    const std::string staging = g_paths.state + (spec.hidden ? "/self-update" : "/staging");
     mkdir(staging.c_str(), 0777);
+    if (spec.hidden && !same_filesystem(staging, parent))
+    {
+        detail = "Manta runs from " + target + ", another drive than " + g_paths.state;
+        std::remove(archive.c_str());
+        return JobError::other_drive;
+    }
     const std::string staged = same_filesystem(staging, parent)
                                    ? staging + "/" + spec.title_id
                                    : parent + "/.emuland-new-" + spec.title_id;
@@ -918,6 +1001,8 @@ JobError run_install(std::size_t index, std::string &detail)
         self_update::remove_tree(staged);
         return JobError::install;
     }
+    if (spec.hidden)
+        return hand_over_self_update(staged, target, release, detail);
     note("[EMULAND] permissions open, moving into %s", target.c_str());
     if (self_update::kind(target) == Kind::directory)
     {
@@ -1066,7 +1151,7 @@ JobError run_uninstall(std::size_t index, bool wipe, std::string &detail)
             std::fprintf(file, "%s\n", spec.title_id);
             std::fclose(file);
         }
-        const bool sent = installer::send_uninstall_helper();
+        const bool sent = installer::send_helper();
         note("[EMULAND] uninstall helper sent=%d", sent ? 1 : 0);
         std::lock_guard lock(g_mutex);
         g_status.needs_close = true;
@@ -1407,6 +1492,23 @@ void set_paths(const Paths &paths)
     std::lock_guard lock(g_mutex);
     g_paths = paths;
     g_releases_loaded = false;
+}
+
+int load_online_catalog()
+{
+    std::string body;
+    if (!self_update::read_small(g_paths.state + "/catalog.json", 256u << 10, body))
+        return 0;
+    OnlineCatalog parsed;
+    std::string error;
+    if (!parse_online_catalog(body, parsed, error))
+    {
+        note("[EMULAND] cached online catalog refused: %s", error.c_str());
+        return 0;
+    }
+    const int added = apply_online_catalog(parsed);
+    note("[EMULAND] online catalog: %d emulators added, %zu changes", added, parsed.changes.size());
+    return added;
 }
 
 void clean_leftovers()

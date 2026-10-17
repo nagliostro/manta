@@ -22,6 +22,7 @@
 #include "demo/catalog.hpp"
 #include "emuland/art.hpp"
 #include "emuland/model.hpp"
+#include "emuland/online_catalog.hpp"
 #include "gfx/gl_program.hpp"
 #include "gfx/renderer.hpp"
 #include "manifest.hpp"
@@ -185,6 +186,19 @@ int main(int argc, char **argv)
     hui::demo::Catalog catalog;
     // Emuland: sample library and the emulators' art (no design here draws
     // the kit's demo covers).
+    // EMULAND_ONLINE_CATALOG=<file>: an online catalog applied as at a console's start.
+    if (const char *online = std::getenv("EMULAND_ONLINE_CATALOG"))
+    {
+        std::string document;
+        emuland::OnlineCatalog parsed;
+        std::string error;
+        if (hui::save::read_file(online, &document) &&
+            emuland::parse_online_catalog(document, parsed, error))
+            std::fprintf(stderr, "online catalog: %d added\n",
+                         emuland::apply_online_catalog(parsed));
+        else
+            std::fprintf(stderr, "online catalog refused: %s\n", error.c_str());
+    }
     emuland::scan(emuland::library());
     std::fprintf(stderr, "emuland art: %d images\n", emuland::load_art(renderer, assets));
 

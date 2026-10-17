@@ -6,6 +6,22 @@ Todas as mudanças relevantes do Manta. O formato segue o
 fica em `hub/src/emuland/model.hpp` (`MANTA_VERSION`) e em `contentVersion` de
 `hub/sce_sys/param.json` (`1.3.0` = `01.003.000`); um teste confere que as duas batem.
 
+## [1.4.0] - 2026-10-17
+
+### Adicionado
+- **Instalador de um passo** (`Manta-vX.Y.Z-installer.elf`): enviado ao ELF loader (porta 9021), instala
+  ou atualiza o Manta sem FTP e sem internet, com o app embutido.
+- **Autoatualização**: o próprio Manta aparece em Atualizações. Ele baixa e confere a versão nova, e
+  o payload `manta_helper` faz a troca assim que o Manta fecha, voltando à versão anterior se algo
+  falhar.
+- **Catálogo online** (`catalog/online.json`): emuladores novos, e correções de onde um emulador é
+  baixado, chegam sem versão nova do app. O arquivo passa por validação rígida.
+- **Publicação automática**: uma tag `vX.Y.Z` no GitHub compila, testa e publica a release com o
+  ZIP, o instalador `.elf` e o `SHA256SUMS.txt`.
+
+### Mudado
+- O payload `uninstall_helper.elf` virou `manta_helper.elf`, que também aplica a autoatualização.
+
 ## [1.3.0] - 2026-10-17
 
 Primeira versão pública.
@@ -53,4 +69,5 @@ Versões de teste internas, só no console de desenvolvimento, sem release. O qu
 - Catálogo com 8 emuladores: PSXS5, SwanStationPS5, PS5SX2, RPCS3, ProsperoEden, PS5CEMU-HAR,
   XPSemu e RetroArch.
 
-[1.3.0]: ../../releases/tag/v1.3.0
+[1.4.0]: https://github.com/nagliostro/manta/releases/tag/v1.4.0
+[1.3.0]: https://github.com/nagliostro/manta/releases/tag/v1.3.0

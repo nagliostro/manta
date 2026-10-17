@@ -30,3 +30,5 @@ host/emuland_host.cpp
 src/emuland/model.cpp
 src/emuland/image.c
 tests/unit/emuland_art_stub.cpp
+src/emuland/json.cpp
+src/emuland/online_catalog.cpp

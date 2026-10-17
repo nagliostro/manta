@@ -8,6 +8,9 @@
 #include "emuland/model.hpp"
 
 #include <cctype>
+#include <deque>
+#include <string_view>
+#include <vector>
 
 namespace emuland
 {
@@ -347,12 +350,93 @@ constexpr EmulatorSpec kCatalog[] = {
     },
 };
 
+// Manta itself, last: "Update all" puts it in place after the emulators.
+constexpr EmulatorSpec kSelf{
+    "manta",
+    "Manta",
+    "App",
+    {"Central de emuladores", "Emulator hub"},
+    "Manta",
+    "GPL-3.0-or-later",
+    MANTA_REPO,
+    "PPSA98265",
+    "/data/emuland",
+    "manta",
+    false,
+    {"", ""},
+    {"O próprio Manta.", "Manta itself."},
+    {{"", ""}, {"", ""}, {"", ""}},
+    {},
+    {},
+    "Manta-v",
+    Maker::multi,
+    {},
+    nullptr,
+    true,
+};
+
+std::vector<EmulatorSpec> &entries()
+{
+    static std::vector<EmulatorSpec> built(std::begin(kCatalog), std::end(kCatalog));
+    return built;
+}
+
+bool g_fixed = false;
+
 } // namespace
+
+const char *keep_text(const std::string &text)
+{
+    static std::deque<std::string> kept; // a deque never moves what it holds
+    return kept.emplace_back(text).c_str();
+}
+
+bool add_catalog_entry(const EmulatorSpec &entry)
+{
+    if (g_fixed)
+        return false;
+    for (const EmulatorSpec &other : entries())
+    {
+        if (std::string_view(other.id) == entry.id ||
+            std::string_view(other.title_id) == entry.title_id)
+            return false;
+    }
+    entries().push_back(entry);
+    return true;
+}
+
+bool override_catalog_entry(const CatalogOverride &change)
+{
+    if (g_fixed)
+        return false;
+    for (std::size_t i = 0; i < std::size(kCatalog); ++i)
+    {
+        EmulatorSpec &entry = entries()[i];
+        if (change.id != entry.id)
+            continue;
+        if (!change.repo.empty())
+            entry.repo = keep_text(change.repo);
+        if (!change.asset_prefix.empty())
+            entry.asset_prefix = keep_text(change.asset_prefix);
+        if (!change.rom_option.empty())
+            entry.rom_option = keep_text(change.rom_option);
+        if (change.prerelease >= 0)
+            entry.prerelease = change.prerelease == 1;
+        return true;
+    }
+    return false;
+}
 
 std::span<const EmulatorSpec> catalog()
 {
-    return kCatalog;
+    if (!g_fixed)
+    {
+        g_fixed = true;
+        entries().push_back(kSelf);
+    }
+    return entries();
 }
+
 
 void tidy_game_name(const std::string &file, std::string &title, std::string &region)
 {
@@ -431,9 +515,9 @@ Library &library()
     static Library instance = []
     {
         Library made;
-        made.emulators.resize(std::size(kCatalog));
-        for (std::size_t i = 0; i < std::size(kCatalog); ++i)
-            made.emulators[i].folder_counts.assign(kCatalog[i].folders.size(), -1);
+        made.emulators.resize(catalog().size());
+        for (std::size_t i = 0; i < catalog().size(); ++i)
+            made.emulators[i].folder_counts.assign(catalog()[i].folders.size(), -1);
         return made;
     }();
     return instance;
