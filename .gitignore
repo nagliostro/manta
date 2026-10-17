@@ -1,0 +1,51 @@
+# Manta - what stays out of the repository.
+# The repository holds only what builds and installs Manta: hub/ (the app),
+# helper/ (its payload), catalog/, scripts/ and docs/.
+
+# Other projects kept beside it for study (each has its own repository)
+/PSXS5/
+/PS5SX2/
+/ProsperoEden/
+
+# The early console test app and the HTML prototype (superseded by hub/)
+/app/
+/prototype/
+
+# Console logs and local tooling
+/logs/
+*.log
+/.vscode/
+/.idea/
+/.vs/
+# A stray folder made by a path mix-up between Windows and WSL ("C:")
+/C[!a-zA-Z]*/
+
+# Build output and downloaded dependencies
+hub/build/
+hub/dist/
+hub/.deps/
+hub/.local/
+hub/results/
+hub/runtime/libc.prx
+hub/.env
+hub/assets/helpers/*.elf
+*.elf
+*.self
+*.sprx
+*.prx
+*.pkg
+*.zip
+
+# Template tests for the component gallery Manta does not ship
+hub/tests/disabled/
+
+# Python and editors
+__pycache__/
+*.pyc
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Release files made for GitHub (attach them to the release, do not commit)
+/release/

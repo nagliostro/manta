@@ -1,0 +1,385 @@
+{
+  "versao_catalogo": 2,
+  "nota": "Espelho do catálogo embutido em hub/src/emuland/model.cpp. Ordem e campos iguais.",
+  "emuladores": [
+    {
+      "id": "psxs5",
+      "nome": "PSXS5",
+      "sistema": "PlayStation",
+      "sistema_curto": "PS1",
+      "autor": "SynoPiia",
+      "licenca": "GPL-3.0-or-later",
+      "repo": "SynoPiia/PSXS5",
+      "title_id": "PPSA97510",
+      "release": {
+        "incluir_prerelease": false,
+        "arquivo": "^PSXS5-v.*\\.zip$",
+        "pasta_no_zip": "PPSA97510"
+      },
+      "requisitos": [
+        "etaHEN + kstuff",
+        "ShadowMountPlus"
+      ],
+      "dados": "/data/PSXS5",
+      "pastas": [
+        {
+          "tipo": "jogos",
+          "caminho": "games",
+          "formatos": [
+            "cue",
+            "bin",
+            "chd",
+            "pbp",
+            "iso",
+            "img",
+            "mdf",
+            "ccd",
+            "m3u"
+          ],
+          "nota": "Uma pasta por jogo"
+        },
+        {
+          "tipo": "bios",
+          "caminho": "bios",
+          "obrigatorio": false,
+          "arquivos": [
+            "scph5500.bin",
+            "scph5501.bin",
+            "scph5502.bin",
+            "scph1001.bin",
+            "scph101.bin"
+          ]
+        },
+        {
+          "tipo": "capas",
+          "caminho": "covers"
+        }
+      ],
+      "fabricante": "sony",
+      "arquivo_prefixo": "PSXS5-v"
+    },
+    {
+      "id": "ps5sx2",
+      "nome": "PS5SX2",
+      "sistema": "PlayStation 2",
+      "sistema_curto": "PS2",
+      "autor": "Swordpdf",
+      "licenca": "GPL-3.0-or-later",
+      "repo": "Swordpdf/PS5SX2",
+      "title_id": "PPSA99203",
+      "release": {
+        "incluir_prerelease": false,
+        "arquivo": "^PS5SX2-.*\\.zip$",
+        "pasta_no_zip": "PPSA99203"
+      },
+      "requisitos": [
+        "kstuff",
+        "ShadowMountPlus",
+        "PS5SXHelper.elf no autoload"
+      ],
+      "payloads": [
+        "PS5SXHelper.elf"
+      ],
+      "dados": "/data/PCSX2",
+      "pastas": [
+        {
+          "tipo": "jogos",
+          "caminho": "games",
+          "formatos": [
+            "iso",
+            "chd",
+            "cso",
+            "zso"
+          ]
+        },
+        {
+          "tipo": "bios",
+          "caminho": "bios",
+          "obrigatorio": true,
+          "extensoes": [
+            "bin"
+          ]
+        },
+        {
+          "tipo": "cheats",
+          "caminho": "cheats",
+          "formatos": [
+            "pnach"
+          ]
+        },
+        {
+          "tipo": "patches",
+          "caminho": "patches",
+          "formatos": [
+            "pnach"
+          ]
+        },
+        {
+          "tipo": "texturas",
+          "caminho": "textures"
+        },
+        {
+          "tipo": "memory_cards",
+          "caminho": "memcards"
+        }
+      ],
+      "fabricante": "sony",
+      "arquivo_prefixo": "PS5SX2-"
+    },
+    {
+      "id": "prosperoeden",
+      "nome": "ProsperoEden",
+      "sistema": "Nintendo Switch",
+      "sistema_curto": "Switch",
+      "autor": "blackbearreloaded",
+      "licenca": "GPL-3.0-or-later",
+      "repo": "blackbearreloaded/ProsperoEden",
+      "title_id": "PPSA99008",
+      "release": {
+        "incluir_prerelease": true,
+        "arquivo": "^ProsperoEden-v.*\\.zip$",
+        "pasta_no_zip": "PPSA99008"
+      },
+      "requisitos": [
+        "etaHEN + kstuff",
+        "ShadowMountPlus"
+      ],
+      "dados": "/data/prosperoeden",
+      "pasta_de_jogos_configuravel": true,
+      "pastas": [
+        {
+          "tipo": "jogos",
+          "caminho": "roms",
+          "formatos": [
+            "nsp",
+            "xci"
+          ]
+        },
+        {
+          "tipo": "chaves",
+          "caminho": "keys",
+          "obrigatorio": true,
+          "arquivos": [
+            "prod.keys"
+          ]
+        },
+        {
+          "tipo": "firmware",
+          "caminho": "firmware",
+          "obrigatorio": true,
+          "formatos": [
+            "nca"
+          ]
+        },
+        {
+          "tipo": "atualizacoes",
+          "caminho": "updates",
+          "formatos": [
+            "nsp"
+          ]
+        },
+        {
+          "tipo": "mods",
+          "caminho": "mods",
+          "nota": "mods/<title ID>/<mod>/{exefs,romfs,cheats}"
+        }
+      ],
+      "fabricante": "nintendo",
+      "arquivo_prefixo": "ProsperoEden-v"
+    },
+    {
+      "id": "swanstation",
+      "nome": "SwanStationPS5",
+      "sistema": "PlayStation",
+      "sistema_curto": "PS1",
+      "fabricante": "sony",
+      "autor": "AngelXex",
+      "licenca": "GPL-3.0",
+      "repo": "darkxex/SwanStationPS5",
+      "title_id": "PPSA98510",
+      "arquivo_prefixo": "PPSA98510",
+      "release": {
+        "incluir_prerelease": false
+      },
+      "requisitos": [
+        "etaHEN + kstuff",
+        "ShadowMountPlus"
+      ],
+      "dados": "/data/SwanStationPS5",
+      "pastas": [
+        {
+          "tipo": "jogos",
+          "caminho": "games",
+          "formatos": [
+            "cue",
+            "bin",
+            "chd",
+            "pbp",
+            "iso",
+            "img",
+            "m3u"
+          ]
+        },
+        {
+          "tipo": "bios",
+          "caminho": "bios",
+          "obrigatorio": false,
+          "nota": "BIOS integrada (OpenBIOS); lê também /data/PSXS5/bios"
+        },
+        {
+          "tipo": "capas",
+          "caminho": "covers"
+        }
+      ]
+    },
+    {
+      "id": "retroarch",
+      "nome": "RetroArch",
+      "sistema": "Vários: N64, GameCube/Wii, PSP, SNES, GBA, Mega Drive, arcade e outros",
+      "sistema_curto": "Retro",
+      "fabricante": "varios",
+      "autor": "Mihawk",
+      "licenca": "GPL-3.0-or-later",
+      "repo": "mihawk-99/PS5_RetroArch",
+      "title_id": "PPSA99169",
+      "arquivo_prefixo": "PS5_RetroArch-",
+      "release": {
+        "incluir_prerelease": false
+      },
+      "requisitos": [
+        "etaHEN + kstuff",
+        "ShadowMountPlus 1.7beta4+"
+      ],
+      "dados": "/data/homebrew/PPSA99169",
+      "mesclar_na_atualizacao": [
+        "system"
+      ],
+      "pastas": [
+        {
+          "tipo": "jogos",
+          "caminho": "content"
+        },
+        {
+          "tipo": "bios",
+          "caminho": "system",
+          "nota": "BIOS de cada núcleo"
+        },
+        {
+          "tipo": "saves",
+          "caminho": "savefiles"
+        }
+      ]
+    },
+    {
+      "id": "ps5cemu",
+      "nome": "PS5CEMU-HAR",
+      "sistema": "Wii U · 3DS · DS",
+      "sistema_curto": "Wii U",
+      "fabricante": "nintendo",
+      "autor": "premohq",
+      "licenca": "GPL-3.0",
+      "repo": "premohq/PS5CEMU-HAR",
+      "title_id": "PPSA99360",
+      "arquivo_prefixo": "PS5CEMU-HAR-",
+      "release": {
+        "incluir_prerelease": false
+      },
+      "requisitos": [
+        "etaHEN, OnionHEN ou ELF loader (9021)",
+        "ShadowMountPlus"
+      ],
+      "dados": "/data/ps5cemu",
+      "pastas": [
+        {
+          "tipo": "jogos",
+          "caminho": "games",
+          "nota": "Wii U"
+        },
+        {
+          "tipo": "jogos_3ds",
+          "caminho": "azahar/games"
+        },
+        {
+          "tipo": "sistema_3ds",
+          "caminho": "azahar/sysdata"
+        },
+        {
+          "tipo": "jogos_ds",
+          "caminho": "melonds/games"
+        }
+      ]
+    },
+    {
+      "id": "xpsemu",
+      "nome": "XPSemu",
+      "sistema": "Xbox",
+      "sistema_curto": "Xbox",
+      "fabricante": "microsoft",
+      "autor": "AZiZ",
+      "licenca": "GPL-2.0",
+      "repo": "ZiZc3/XPSemu",
+      "title_id": "PPSA97358",
+      "arquivo_prefixo": "PPSA97358",
+      "release": {
+        "incluir_prerelease": false
+      },
+      "requisitos": [
+        "etaHEN + kstuff",
+        "ShadowMountPlus"
+      ],
+      "dados": "/data/xemu",
+      "pastas": [
+        {
+          "tipo": "bios",
+          "caminho": ".",
+          "obrigatorio": true,
+          "arquivos": [
+            "mcpx_1.0.bin",
+            "Complex_4627.bin"
+          ]
+        },
+        {
+          "tipo": "jogos",
+          "caminho": "games",
+          "formatos": [
+            "iso",
+            "xiso"
+          ]
+        },
+        {
+          "tipo": "patches",
+          "caminho": "patches",
+          "formatos": [
+            "jmp"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rpcs3",
+      "nome": "RPCS3",
+      "sistema": "PlayStation 3",
+      "sistema_curto": "PS3",
+      "fabricante": "sony",
+      "autor": "lavavex",
+      "licenca": "GPL-3.0",
+      "repo": "lavavex/rpcs3-PS5",
+      "title_id": "PPSA99300",
+      "arquivo_prefixo": null,
+      "so_codigo_fonte": true,
+      "nota": "O autor publica só o código-fonte e não distribui builds; instalado à mão, o Emuland reconhece e abre.",
+      "requisitos": [
+        "etaHEN + kstuff",
+        "ShadowMountPlus",
+        "PS3UPDAT.PUP"
+      ],
+      "dados": "/data/rpcs3",
+      "pastas": [
+        {
+          "tipo": "jogos",
+          "caminho": "games"
+        }
+      ]
+    }
+  ]
+}

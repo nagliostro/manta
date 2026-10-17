@@ -1,0 +1,19 @@
+# Manta - line endings: scripts that run in WSL or on the console keep LF.
+* text=auto eol=lf
+*.sh text eol=lf
+*.py text eol=lf
+*.c text eol=lf
+*.cpp text eol=lf
+*.h text eol=lf
+*.hpp text eol=lf
+Makefile text eol=lf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.png binary
+*.jpg binary
+*.dds binary
+*.at9 binary
+*.ogg binary
+*.wav binary
+*.ttf binary
+*.otf binary
