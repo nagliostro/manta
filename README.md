@@ -1,175 +1,177 @@
 <p align="center">
-  <img src="docs/brand/manta-icon-512.png" width="128" alt="Ícone do Manta">
+  <img src="docs/brand/manta-icon-512.png" width="128" alt="Manta icon">
 </p>
 
 <h1 align="center">Manta</h1>
 
 <p align="center">
-  <b>Todos os emuladores do seu PS5 em um só lugar.</b><br>
-  Instale, atualize, organize e jogue — sem FTP, sem PC, sem complicação.
+  <b>English</b> · <a href="README.pt-BR.md">Português</a> · <a href="README.es.md">Español</a>
 </p>
 
 <p align="center">
-  <a href="../../releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/nagliostro/manta?label=vers%C3%A3o"></a>
-  <img alt="Plataforma" src="https://img.shields.io/badge/plataforma-PS5%20homebrew-1E3A5F">
-  <a href="LICENSE"><img alt="Licença" src="https://img.shields.io/badge/licen%C3%A7a-GPL--3.0-5B6878"></a>
+  <b>Every PS5 emulator in one place.</b><br>
+  Install, update, organize and play — no FTP, no PC, no hassle.
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/inicio.png" width="900" alt="Tela inicial do Manta">
+  <a href="../../releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/nagliostro/manta?label=release"></a>
+  <img alt="Platform" src="https://img.shields.io/badge/platform-PS5%20homebrew-1E3A5F">
+  <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-GPL--3.0-5B6878"></a>
 </p>
 
-> **English:** Manta is a PS5 homebrew hub that installs, updates, removes and opens every native
-> PS5 emulator from one place, with a game library and covers. The app speaks Portuguese and
-> English (it follows the console's language). See [Installation](#instalação) — the steps are the
-> same in any language.
+<p align="center">
+  <img src="docs/screenshots/inicio.png" width="900" alt="Manta's home screen">
+</p>
 
 ---
 
-## Por que o Manta existe
+## Why Manta exists
 
-Cada emulador nativo de PS5 vive num repositório diferente, com seu próprio jeito de instalar,
-suas próprias pastas e seu próprio ritmo de atualização. Para usar três emuladores era preciso
-baixar três ZIPs no PC, copiar por FTP, acertar permissões, lembrar onde vai cada BIOS e voltar ao
-GitHub de tempos em tempos para ver se saiu versão nova.
+Every native PS5 emulator lives in a different repository, with its own way to install, its own
+folders and its own release pace. Using three emulators meant downloading three ZIPs on a PC,
+copying them over FTP, fixing permissions, remembering where each BIOS goes and checking GitHub
+every now and then for a new version.
 
-O Manta junta tudo isso em **um app só, no próprio console**:
+Manta brings all of that into **one app, on the console itself**:
 
-- você instala o Manta uma vez;
-- a partir dele, instala e atualiza cada emulador com um botão;
-- copia jogos e BIOS de um pendrive sem saber o caminho de nada;
-- e abre seus jogos de uma biblioteca única, com capas, como na tela do PS5.
+- you install Manta once;
+- from it, you install and update each emulator with one button;
+- you copy games and BIOS from a USB drive without knowing any path;
+- and you open your games from a single library, with covers, just like the PS5 home screen.
 
-## Funcionalidades
+## Features
 
 | | |
 |---|---|
-| **Catálogo de emuladores** | 8 emuladores nativos de PS5, organizados por fabricante, com ícone, arte, autor, licença e requisitos de cada um. |
-| **Instalar e atualizar** | Baixa o release mais novo direto do GitHub, confere o **SHA-256** publicado, extrai e coloca no lugar. A versão anterior fica guardada até a nova estar pronta. "Atualizar todos" de uma vez. |
-| **Desinstalar** | Remove só o app ("Manter meus arquivos") ou tudo, incluindo jogos, BIOS e saves ("Apagar tudo"). O ícone sai da tela inicial sozinho quando o Manta fecha. |
-| **Biblioteca de jogos** | Todos os jogos de todos os emuladores instalados em uma grade de capas, com filtro por sistema. Discos de um mesmo jogo aparecem uma vez só. |
-| **Capas automáticas** | Usa as capas que você já tem e, se quiser, baixa as que faltam do [libretro-thumbnails](https://github.com/libretro-thumbnails/libretro-thumbnails). |
-| **Jogar direto** | Nos emuladores que aceitam (SwanStationPS5, PS5CEMU-HAR), ✕ abre o jogo direto, sem passar pelo menu do emulador. |
-| **"Abrir em qual emulador?"** | Se mais de um emulador instalado roda o jogo (ex.: PSXS5 e SwanStationPS5 para PS1), o Manta pergunta em qual abrir e lembra da última escolha. |
-| **Pastas** | Mostra cada pasta de cada emulador (jogos, BIOS, cheats, saves…), quantos arquivos tem e o que está faltando. Cria as que não existem. |
-| **Importar do pendrive** | Copia de `Manta/<sistema>/<pasta>/` no pendrive ou HD externo para o lugar certo no console. Só copia: nada é apagado, e o que já está lá é pulado. |
-| **Preparar pendrive** | Cria no pendrive a árvore de pastas dos emuladores instalados, com um `LEIA-ME.txt` dizendo o que vai em cada uma. |
-| **Atualiza a si mesmo** | Uma versão nova do Manta aparece em Atualizações, como a dos emuladores. Ele baixa, confere e aplica a troca assim que você fecha o app. |
-| **Catálogo online** | Emuladores novos chegam ao Manta sem precisar de versão nova do app: o catálogo vem do [`catalog/online.json`](catalog/online.json) deste repositório. |
-| **Bilíngue** | Português e inglês, seguindo o idioma do console (ou escolha em Ajustes). |
-| **Feito para a TV** | Interface no estilo de streaming, 60 fps, 4K, sons e movimento suaves, opção de reduzir movimento, contraste AA. |
+| **Emulator catalog** | 8 native PS5 emulators, grouped by maker, with each one's icon, art, author, license and requirements. |
+| **Install and update** | Downloads the latest release straight from GitHub, checks the published **SHA-256**, extracts it and puts it in place. The previous version is kept until the new one is ready. "Update all" in one go. |
+| **Uninstall** | Removes just the app ("Keep my files") or everything, including games, BIOS and saves ("Delete everything"). The icon leaves the home screen on its own when Manta closes. |
+| **Game library** | Every game from every installed emulator in one cover grid, filtered by system. Discs of the same game show up once. |
+| **Automatic covers** | Uses the covers you already have and, if you want, downloads the missing ones from [libretro-thumbnails](https://github.com/libretro-thumbnails/libretro-thumbnails). |
+| **Play directly** | On the emulators that support it (SwanStationPS5, PS5CEMU-HAR), ✕ opens the game directly, skipping the emulator's menu. |
+| **"Open in which emulator?"** | When more than one installed emulator runs the game (e.g. PSXS5 and SwanStationPS5 for PS1), Manta asks which one to use and remembers your last choice. |
+| **Folders** | Shows every folder of every emulator (games, BIOS, cheats, saves…), how many files each holds and what is missing. Creates the ones that don't exist. |
+| **Import from USB** | Copies from `Manta/<system>/<folder>/` on a USB drive or external disk to the right place on the console. It only copies: nothing is deleted, and what is already there is skipped. |
+| **Prepare USB drive** | Creates the folder tree of the installed emulators on the drive, with a `README.txt` explaining what goes in each one. |
+| **Updates itself** | A new Manta version shows up in Updates, just like the emulators. Manta downloads it, checks it and swaps it in as soon as you close the app. |
+| **Online catalog** | New emulators reach Manta without a new app version: the catalog comes from this repository's [`catalog/online.json`](catalog/online.json). |
+| **Bilingual** | English and Portuguese, following the console's language (or pick one in Settings). |
+| **Made for the TV** | Streaming-style interface, 60 fps, 4K, smooth sounds and motion, a reduce-motion option, AA contrast. |
 
-### Emuladores do catálogo
+### Emulators in the catalog
 
-| Emulador | Sistema | Autor | Instalação pelo Manta |
+| Emulator | System | Author | Install through Manta |
 |---|---|---|---|
 | [PSXS5](https://github.com/SynoPiia/PSXS5) | PlayStation | SynoPiia | ✅ |
-| [SwanStationPS5](https://github.com/darkxex/SwanStationPS5) | PlayStation | AngelXex | ✅ (abre o jogo direto) |
+| [SwanStationPS5](https://github.com/darkxex/SwanStationPS5) | PlayStation | AngelXex | ✅ (opens games directly) |
 | [PS5SX2](https://github.com/Swordpdf/PS5SX2) | PlayStation 2 | Swordpdf | ✅ |
-| [RPCS3 PS5](https://github.com/lavavex/rpcs3-PS5) | PlayStation 3 | lavavex | ⚠️ só código-fonte; reconhecido se instalado à mão |
+| [RPCS3 PS5](https://github.com/lavavex/rpcs3-PS5) | PlayStation 3 | lavavex | ⚠️ source code only; detected if installed by hand |
 | [ProsperoEden](https://github.com/blackbearreloaded/ProsperoEden) | Nintendo Switch | blackbearreloaded | ✅ |
-| [PS5CEMU-HAR](https://github.com/premohq/PS5CEMU-HAR) | Wii U · 3DS · DS | premohq | ✅ (abre o jogo direto) |
+| [PS5CEMU-HAR](https://github.com/premohq/PS5CEMU-HAR) | Wii U · 3DS · DS | premohq | ✅ (opens games directly) |
 | [XPSemu](https://github.com/ZiZc3/XPSemu) | Xbox | AZiZ | ✅ |
 | [RetroArch PS5](https://github.com/mihawk-99/PS5_RetroArch) | N64, GameCube/Wii, PSP, SNES, GBA, Mega Drive, arcade… | Mihawk | ✅ |
 
-O Manta **não inclui** nenhum emulador, BIOS ou jogo: ele baixa os emuladores dos repositórios
-oficiais de cada autor. BIOS e jogos são seus.
+Manta **does not include** any emulator, BIOS or game: it downloads the emulators from each
+author's official repository. BIOS files and games are yours.
 
-## Capturas
+## Screenshots
 
 <p align="center">
-  <img src="docs/screenshots/jogos.png" width="440" alt="Biblioteca de jogos">
-  <img src="docs/screenshots/escolher-emulador.png" width="440" alt="Abrir em qual emulador?">
-  <img src="docs/screenshots/detalhes.png" width="440" alt="Detalhes de um emulador">
-  <img src="docs/screenshots/pastas.png" width="440" alt="Pastas e importação do pendrive">
-  <img src="docs/screenshots/atualizacoes.png" width="440" alt="Atualizações">
-  <img src="docs/screenshots/instalando.png" width="440" alt="Instalando um emulador">
+  <img src="docs/screenshots/jogos.png" width="440" alt="Game library">
+  <img src="docs/screenshots/escolher-emulador.png" width="440" alt="Open in which emulator?">
+  <img src="docs/screenshots/detalhes.png" width="440" alt="An emulator's details">
+  <img src="docs/screenshots/pastas.png" width="440" alt="Folders and USB import">
+  <img src="docs/screenshots/atualizacoes.png" width="440" alt="Updates">
+  <img src="docs/screenshots/instalando.png" width="440" alt="Installing an emulator">
 </p>
 
-## Requisitos
+## Requirements
 
-- **PS5 desbloqueado** com um HEN que libere o acesso a `/data` (etaHEN, LegacyJB ou OnionHEN,
-  com **kstuff**).
-- **[ShadowMountPlus](https://github.com/drakmor/ShadowMountPlus)**, que coloca na tela inicial
-  os apps de `/data/homebrew/` (o Manta e os emuladores que ele instala).
-- **Servidor FTP** no console (o do etaHEN ou o ftpsrv, porta 2121), só para instalar o Manta pela
-  primeira vez.
-- **Internet no PS5** para instalar/atualizar emuladores e baixar capas.
-- Opcional: **ELF loader** na porta 9021 (vem no etaHEN/LegacyJB), usado para tirar da tela inicial
-  o ícone de um emulador desinstalado.
+- **A jailbroken PS5** with a HEN that unlocks `/data` (etaHEN, LegacyJB or OnionHEN, with
+  **kstuff**).
+- **[ShadowMountPlus](https://github.com/drakmor/ShadowMountPlus)**, which puts the apps in
+  `/data/homebrew/` (Manta and the emulators it installs) on the home screen.
+- **An FTP server** on the console (etaHEN's or ftpsrv, port 2121), only to install Manta the
+  first time.
+- **Internet on the PS5** to install and update emulators and download covers.
+- Optional: an **ELF loader** on port 9021 (included in etaHEN and LegacyJB), used to remove an
+  uninstalled emulator's icon from the home screen.
 
-Testado em: firmware 13.60, LegacyJB + kstuff + ShadowMountPlus.
+Tested on: firmware 13.60, LegacyJB + kstuff + ShadowMountPlus.
 
-## Instalação
+## Installation
 
-Na página de [**Releases**](../../releases/latest) há dois jeitos de instalar. Escolha um.
+The [**Releases**](../../releases/latest) page offers two ways to install. Pick one.
 
-### Opção 1 — instalador `.elf` (recomendado, sem FTP)
+### Option 1 — `.elf` installer (recommended, no FTP)
 
-1. Baixe **`Manta-vX.Y.Z-installer.elf`**.
-2. Envie o arquivo para o **ELF loader** do PS5 (porta **9021**), do mesmo jeito que você envia
-   outros payloads:
-   - do PC: `python scripts/send-elf.py <IP-do-PS5> Manta-vX.Y.Z-installer.elf`
-     ou um app como o NetCat GUI;
-   - ou pelo menu de payloads do seu HEN, se ele carregar `.elf` de um pendrive.
-3. O PS5 avisa "Manta X.Y.Z instalado". Em instantes o **Manta** aparece na tela inicial.
+1. Download **`Manta-vX.Y.Z-installer.elf`**.
+2. Send the file to the PS5's **ELF loader** (port **9021**), the same way you send any other
+   payload:
+   - from a PC: `python scripts/send-elf.py <PS5-IP> Manta-vX.Y.Z-installer.elf`
+     or an app such as NetCat GUI;
+   - or through your HEN's payload menu, if it loads `.elf` files from a USB drive.
+3. The PS5 shows a notification that Manta was installed. **Manta** appears on the home screen a
+   moment later.
 
-O instalador já leva o app dentro dele: não precisa de internet. Se o Manta estiver aberto, ele
-espera você fechar.
+The installer carries the app inside it, so it needs no internet. If Manta is open, it waits for
+you to close it.
 
-### Opção 2 — ZIP por FTP
+### Option 2 — ZIP over FTP
 
-1. Baixe **`Manta-vX.Y.Z-PPSA98265.zip`** e extraia. Você terá uma pasta chamada **`PPSA98265`**.
-2. Com o FTP ligado, copie **a pasta inteira** para `/data/homebrew/` no console, para ficar
+1. Download **`Manta-vX.Y.Z-PPSA98265.zip`** and extract it. You get a folder named
+   **`PPSA98265`**.
+2. With FTP on, copy **the whole folder** to `/data/homebrew/` on the console, so you end up with
    `/data/homebrew/PPSA98265/eboot.bin`, `.../sce_sys/`, `.../assets/`.
-   - **Cliente FTP** (FileZilla, WinSCP…): conecte em `IP-do-PS5`, porta `2121`, usuário anônimo,
-     envie a pasta e dê permissão `777` a ela e a tudo dentro.
-   - **Script** (Python 3): `python scripts/deploy-ps5.py <IP-do-PS5> --folder caminho/para/PPSA98265`
-     envia tudo já com as permissões certas.
-3. Espere alguns segundos: o ShadowMountPlus registra o app e o **Manta** aparece na tela inicial.
+   - **FTP client** (FileZilla, WinSCP…): connect to `PS5-IP`, port `2121`, anonymous user,
+     upload the folder and give it and everything inside permission `777`.
+   - **Script** (Python 3): `python scripts/deploy-ps5.py <PS5-IP> --folder path/to/PPSA98265`
+     uploads everything with the right permissions.
+3. Wait a few seconds: ShadowMountPlus registers the app and **Manta** appears on the home screen.
 
-> O IP do PS5 está em **Configurações › Rede › Status da conexão**. Para conferir um download, o
-> `SHA256SUMS.txt` da release traz o hash de cada arquivo (`certutil -hashfile <arquivo> SHA256`
-> no Windows, `sha256sum` no Linux/macOS).
+> The PS5's IP is under **Settings › Network › Connection Status**. To check a download, the
+> release's `SHA256SUMS.txt` lists every file's hash (`certutil -hashfile <file> SHA256` on
+> Windows, `sha256sum` on Linux/macOS).
 
-Na primeira vez, o Manta pede acesso a `/data` ao HEN e procura as versões mais novas dos
-emuladores.
+On first start, Manta asks the HEN for access to `/data` and looks for the latest emulator
+versions.
 
-### Atualizar o Manta
+### Updating Manta
 
-**Pelo próprio Manta:** quando sai uma versão nova, ela aparece em **Atualizações** (linha
-"Manta"). Aperte **Atualizar**. O Manta baixa e confere a versão nova, depois pede para você
-fechar o app. Assim que você fecha, a troca é feita e o PS5 avisa "Manta atualizado para vX.Y.Z".
-É só abrir de novo. Isso usa o ELF loader (porta 9021).
+**From Manta itself:** when a new version is out, it shows up in **Updates** (the "Manta" row).
+Press **Update**. Manta downloads and checks the new version, then asks you to close the app. As
+soon as you do, the swap happens and the PS5 shows a notification. Just open it again. This uses
+the ELF loader (port 9021).
 
-**Sem o ELF loader:** envie o instalador `.elf` novo, ou copie o ZIP novo por cima da pasta. Seus
-emuladores, jogos e ajustes não são tocados.
+**Without the ELF loader:** send the new `.elf` installer, or copy the new ZIP over the folder.
+Your emulators, games and settings are left untouched.
 
-### Desinstalar o Manta
+### Uninstalling Manta
 
-Apague `/data/homebrew/PPSA98265` (e, se quiser, `/data/emuland`, onde ficam o cache de capas e os
-ajustes). Os emuladores instalados continuam funcionando.
+Delete `/data/homebrew/PPSA98265` (and, if you want, `/data/emuland`, which holds the cover cache
+and the settings). The installed emulators keep working.
 
-## Como usar
+## How to use
 
-### Controles
+### Controls
 
-| Botão | Ação |
+| Button | Action |
 |---|---|
-| ✕ | Confirmar · Jogar · Instalar |
-| ○ | Voltar |
-| □ | Em Jogos: abrir as Pastas do emulador do jogo |
-| L1 / R1 | Trocar de aba |
-| OPTIONS | Ajustes |
+| ✕ | Confirm · Play · Install |
+| ○ | Back |
+| □ | In Games: open the Folders of the game's emulator |
+| L1 / R1 | Switch tabs |
+| OPTIONS | Settings |
 
-### Passo a passo
+### Step by step
 
-1. **Instale um emulador** — Em **Início**, escolha o emulador e aperte ✕ para ver os detalhes.
-   Aperte **Instalar**. O Manta baixa, confere e instala. No fim, **feche o Manta** quando ele
-   pedir: o ShadowMountPlus só registra apps novos com o Manta fechado. Abra o Manta de novo.
-2. **Prepare um pendrive** (exFAT ou FAT32) — Em **Pastas**, aperte **Preparar pendrive**. O
-   Manta cria `Manta/<sistema>/jogos`, `Manta/<sistema>/bios` etc. e um `LEIA-ME.txt`.
-3. **Copie seus arquivos no PC** — Jogos e BIOS nas pastas certas do pendrive. Exemplo:
+1. **Install an emulator** — On **Home**, pick the emulator and press ✕ to see its details. Press
+   **Install**. Manta downloads, checks and installs it. At the end, **close Manta** when it asks:
+   ShadowMountPlus only registers new apps while Manta is closed. Open Manta again.
+2. **Prepare a USB drive** (exFAT or FAT32) — In **Folders**, press **Prepare USB drive**. Manta
+   creates `Manta/<system>/jogos`, `Manta/<system>/bios` and so on, plus a `README.txt`.
+3. **Copy your files on the PC** — Games and BIOS go in the right folders on the drive. The folder
+   names are the same in every language (`jogos` = games). Example:
 
    ```
    Manta/
@@ -178,20 +180,20 @@ ajustes). Os emuladores instalados continuam funcionando.
    │   └── bios/    scph5501.bin
    └── ps2/
        ├── jogos/   Shadow of the Colossus (USA).iso
-       └── bios/    (sua BIOS do PS2)
+       └── bios/    (your PS2 BIOS)
    ```
 
-4. **Importe** — Conecte o pendrive no PS5. Em **Pastas**, escolha o emulador e aperte
-   **Importar tudo do pendrive** (ou ✕ numa pasta para importar só ela).
-5. **Jogue** — Em **Jogos**, escolha o jogo e aperte ✕. Se mais de um emulador roda aquele jogo,
-   o Manta pergunta qual usar.
-6. **Mantenha tudo em dia** — A aba **Atualizações** mostra o que tem versão nova. **Atualizar
-   todos** resolve de uma vez. O Manta procura atualizações ao abrir (no máximo a cada 6 horas,
-   para respeitar o limite do GitHub).
+4. **Import** — Plug the drive into the PS5. In **Folders**, pick the emulator and press
+   **Import all from USB** (or ✕ on a folder to import just that one).
+5. **Play** — In **Games**, pick the game and press ✕. If more than one emulator runs it, Manta
+   asks which one to use.
+6. **Keep everything up to date** — The **Updates** tab shows what has a new version. **Update
+   all** handles everything at once. Manta checks for updates when it opens (at most every 6
+   hours, to respect GitHub's limit).
 
-### Onde cada emulador guarda os arquivos
+### Where each emulator keeps its files
 
-| Emulador | Pasta no console | Pasta no pendrive |
+| Emulator | Folder on the console | Folder on the USB drive |
 |---|---|---|
 | PSXS5 | `/data/PSXS5` (`games`, `bios`, `covers`) | `Manta/ps1/` |
 | SwanStationPS5 | `/data/SwanStationPS5` (`games`, `bios`, `covers`) | `Manta/ps1-swan/` |
@@ -200,111 +202,114 @@ ajustes). Os emuladores instalados continuam funcionando.
 | ProsperoEden | `/data/prosperoeden` (`roms`, `keys`, `firmware`, `updates`, `mods`) | `Manta/switch/` |
 | PS5CEMU-HAR | `/data/ps5cemu` | `Manta/wiiu/` |
 | XPSemu | `/data/xemu` | `Manta/xbox/` |
-| RetroArch | dentro do app: `content`, `system`, `savefiles` | `Manta/retroarch/` |
+| RetroArch | inside the app: `content`, `system`, `savefiles` | `Manta/retroarch/` |
 
-A tela **Pastas** mostra sempre o caminho exato e o que está faltando.
+The **Folders** screen always shows the exact path and what is missing.
 
-## Perguntas frequentes
+## FAQ
 
-**O emulador diz "BIOS não encontrada", mas o jogo abre.** O SwanStationPS5 traz uma BIOS livre
-(OpenBIOS) embutida, que roda a maioria dos jogos. Uma BIOS original melhora a compatibilidade:
-coloque `scph5501.bin` (EUA), `scph5502.bin` (Europa) ou `scph5500.bin` (Japão) na pasta `bios`.
+**The emulator says "BIOS not found", but the game runs.** SwanStationPS5 ships a free BIOS
+(OpenBIOS) that runs most games. An original BIOS improves compatibility: put `scph5501.bin`
+(USA), `scph5502.bin` (Europe) or `scph5500.bin` (Japan) in the `bios` folder.
 
-**Instalei um emulador e ele não aparece na tela inicial.** Feche o Manta: o ShadowMountPlus só
-registra apps novos quando nenhum jogo/app está aberto.
+**I installed an emulator and it doesn't show up on the home screen.** Close Manta:
+ShadowMountPlus only registers new apps while no game or app is open.
 
-**"Limite do GitHub: tente depois das HH:MM".** Sem conta, o GitHub aceita 60 consultas por hora
-por IP. O Manta guarda a última resposta e avisa a hora em que dá para tentar de novo.
+**"GitHub limit: try again after HH:MM".** Without an account, GitHub accepts 60 requests per hour
+per IP. Manta keeps the last answer and tells you when you can try again.
 
-**O Manta apaga alguma coisa sem eu pedir?** Não. Importar só copia, atualizar guarda a versão
-anterior até a nova estar no lugar, e desinstalar pergunta se você quer manter seus arquivos.
+**Does Manta delete anything without asking?** No. Importing only copies, updating keeps the
+previous version until the new one is in place, and uninstalling asks whether you want to keep
+your files.
 
-**Onde fica o log?** Em `/data/emuland/hub.log` (o da execução anterior em `hub.prev.log`). O
-instalador `.elf` escreve em `manta-installer.log`, e a troca de versão e as desinstalações em
-`manta-helper.log`, todos na mesma pasta. Anexe ao abrir uma issue.
+**Where is the log?** In `/data/emuland/hub.log` (the previous run's in `hub.prev.log`). The `.elf`
+installer writes `manta-installer.log`, and the version swap and uninstalls write
+`manta-helper.log`, all in the same folder. Attach it when you open an issue.
 
-**Quero sugerir um emulador para o catálogo.** Abra uma issue ou um pull request no
-[`catalog/online.json`](catalog/online.json) ([formato](catalog/README.md)). Depois de aceito, ele
-aparece para todos sem versão nova do Manta.
+**I want to suggest an emulator for the catalog.** Open an issue or a pull request against
+[`catalog/online.json`](catalog/online.json) ([format](catalog/README.md)). Once accepted, it shows
+up for everyone without a new Manta version.
 
-## Segurança
+## Security
 
-- Downloads só por **HTTPS**, só dos repositórios oficiais listados no catálogo, conferidos pelo
-  **SHA-256** que o GitHub publica para cada arquivo.
-- O ZIP é inspecionado antes de extrair: nada fora da pasta do app, sem caminhos com `..`, sem
-  links simbólicos, limite de tamanho e de memória.
-- O Manta só remove a pasta de um app depois de confirmar que ela é mesmo daquele app.
-- Imagens (capas) com dimensões absurdas são recusadas antes de decodificar.
-- O catálogo online passa por validação rígida: um emulador só pode usar uma pasta de dados
-  própria em `/data/<nome>`, e um documento com qualquer regra quebrada é ignorado por inteiro.
-- A troca de versão do próprio Manta só aceita a pasta que o Manta preparou e só grava na pasta
-  do Manta. Se algo falhar no meio, a versão anterior volta.
+- Downloads only over **HTTPS**, only from the official repositories listed in the catalog,
+  checked against the **SHA-256** GitHub publishes for each file.
+- The ZIP is inspected before extraction: nothing outside the app folder, no `..` paths, no
+  symbolic links, size and memory limits.
+- Manta only removes an app's folder after confirming it really belongs to that app.
+- Images (covers) with absurd dimensions are rejected before decoding.
+- The online catalog goes through strict validation: an emulator may only use a data folder of
+  its own in `/data/<name>`, and a document that breaks any rule is ignored entirely.
+- Manta's own version swap only accepts the folder Manta prepared and only writes to Manta's
+  folder. If anything fails midway, the previous version comes back.
 
-Encontrou uma falha? Abra uma issue (ou, se for sensível, entre em contato pelo perfil do
-mantenedor antes de divulgar).
+Found a vulnerability? Open an issue (or, if it is sensitive, contact the maintainer through their
+profile before disclosing it).
 
-## Compilar a partir do código
+## Building from source
 
-Precisa de **Windows com WSL (Ubuntu)** ou Linux, com `clang-18`, `lld-18`, `ninja-build`,
-`rsync`, `python3`, `make` e `zip`.
+Needs **Windows with WSL (Ubuntu)** or Linux, with `clang-18`, `lld-18`, `ninja-build`, `rsync`,
+`python3`, `make` and `zip`.
 
 ```bash
 # Windows
-scripts\build-ps5.cmd                         # gera hub/dist/PPSA98265 e hub/dist/PPSA98265.zip
-python scripts/deploy-ps5.py <IP-do-PS5>      # envia o build por FTP
-python scripts/deploy-ps5.py <IP-do-PS5> --log   # traz /data/emuland/hub.log para logs/
+scripts\build-ps5.cmd                         # builds hub/dist/PPSA98265 and hub/dist/PPSA98265.zip
+python scripts/deploy-ps5.py <PS5-IP>         # uploads the build over FTP
+python scripts/deploy-ps5.py <PS5-IP> --log   # fetches /data/emuland/hub.log into logs/
 
 # Linux / WSL
 bash scripts/build-ps5.sh
 ```
 
-O build gera também `hub/dist/manta-installer.elf` (o instalador de um passo, com o ZIP dentro).
+The build also produces `hub/dist/manta-installer.elf` (the one-step installer, with the ZIP
+inside).
 
-**Publicar uma versão:** mude `MANTA_VERSION` em `hub/src/emuland/model.hpp` e `contentVersion` em
-`hub/sce_sys/param.json` (um teste confere que batem), escreva a entrada do `CHANGELOG.md` (e, se
-quiser, `docs/RELEASE-vX.Y.Z.md`), faça o commit e envie a tag:
+**Publishing a version:** change `MANTA_VERSION` in `hub/src/emuland/model.hpp` and
+`contentVersion` in `hub/sce_sys/param.json` (a test checks that they match), write the
+`CHANGELOG.md` entry (and, if you want, `docs/RELEASE-vX.Y.Z.md`), commit and push the tag:
 
 ```bash
 git tag v1.4.0 && git push origin main v1.4.0
 ```
 
-O GitHub Actions ([`release.yml`](.github/workflows/release.yml)) compila, roda os testes e publica
-a release com o ZIP, o instalador `.elf` e o `SHA256SUMS.txt`. Os Mantas já instalados veem a
-versão nova em Atualizações.
+GitHub Actions ([`release.yml`](.github/workflows/release.yml)) builds, runs the tests and
+publishes the release with the ZIP, the `.elf` installer and `SHA256SUMS.txt`. Installed copies of
+Manta see the new version in Updates.
 
-Na primeira vez, o build baixa o SDK de payloads do PS5, o ps5-opengl e o libcurl (PacBrew).
+On first run, the build downloads the PS5 payload SDK, ps5-opengl and libcurl (PacBrew).
 
-**Prévia no PC** (sem console): `wsl -- bash scripts/hub-preview.sh <pasta>` renderiza todas as
-telas em PNG. **Testes:** dentro de `hub/`, `make test-unit` e `bash tools/installer-test.sh`.
+**PC preview** (no console): `wsl -- bash scripts/hub-preview.sh <folder>` renders every screen
+to PNG. **Tests:** inside `hub/`, `make test-unit` and `bash tools/installer-test.sh`.
 
-### Estrutura
+### Layout
 
 ```
-hub/        o app (C++20, OpenGL 4.6 pelo kit ps5-homebrew-ui)
-  src/concepts/emuland.cpp      todas as telas
-  src/emuland/                  catálogo, biblioteca de jogos, artes
-  src/platform/ps5/             instalador, capas, lançador, acesso a /data
-  host/                         versão de PC para prévia e testes
-helper/     payloads: manta_helper (troca de versão, ícones de desinstalados) e o instalador .elf
-catalog/    online.json (catálogo online) e emuladores.json (espelho do embutido)
-.github/    build e publicação automáticos de cada versão
-scripts/    build, envio por FTP e prévia
-docs/       design (fonte de verdade da interface), plano, identidade visual
+hub/        the app (C++20, OpenGL 4.6 through the ps5-homebrew-ui kit)
+  src/concepts/emuland.cpp      every screen
+  src/emuland/                  catalog, game library, art
+  src/platform/ps5/             installer, covers, launcher, /data access
+  host/                         PC build for preview and tests
+helper/     payloads: manta_helper (version swap, icons of uninstalled apps) and the .elf installer
+catalog/    online.json (online catalog) and emuladores.json (mirror of the built-in one)
+.github/    automatic build and publishing of each version
+scripts/    build, FTP upload and preview
+docs/       design (source of truth for the interface), plan, visual identity
 ```
 
-## Créditos
+## Credits
 
-- Interface construída sobre o [ps5-homebrew-ui](https://github.com/blackbearreloaded/ps5-homebrew-ui)
-  e o [ps5-native-app-boilerplate](https://github.com/blackbearreloaded/ps5-native-app-boilerplate),
-  de BlackBearReloaded, com o [PS5 Payload SDK](https://github.com/ps5-payload-dev/sdk).
-- Capas do [libretro-thumbnails](https://github.com/libretro-thumbnails/libretro-thumbnails).
-- Fonte [Inter](https://github.com/rsms/inter); imagens com [stb](https://github.com/nothings/stb);
-  ZIP com [miniz](https://github.com/richgel999/miniz); rede com libcurl + OpenSSL.
-- Todos os autores dos emuladores do catálogo, sem os quais o Manta não teria o que reunir.
+- Interface built on [ps5-homebrew-ui](https://github.com/blackbearreloaded/ps5-homebrew-ui)
+  and [ps5-native-app-boilerplate](https://github.com/blackbearreloaded/ps5-native-app-boilerplate),
+  by BlackBearReloaded, with the [PS5 Payload SDK](https://github.com/ps5-payload-dev/sdk).
+- Covers from [libretro-thumbnails](https://github.com/libretro-thumbnails/libretro-thumbnails).
+- [Inter](https://github.com/rsms/inter) font; images with [stb](https://github.com/nothings/stb);
+  ZIP with [miniz](https://github.com/richgel999/miniz); networking with libcurl + OpenSSL.
+- Every author of the emulators in the catalog, without whom Manta would have nothing to bring
+  together.
 
-Avisos completos em [hub/THIRD_PARTY_NOTICES.md](hub/THIRD_PARTY_NOTICES.md).
+Full notices in [hub/THIRD_PARTY_NOTICES.md](hub/THIRD_PARTY_NOTICES.md).
 
-## Licença
+## License
 
-[GPL-3.0-or-later](LICENSE). PlayStation e PS5 são marcas da Sony Interactive Entertainment; este
-projeto não tem relação com a Sony. Use apenas jogos e BIOS que você possui.
+[GPL-3.0-or-later](LICENSE). PlayStation and PS5 are trademarks of Sony Interactive Entertainment;
+this project is not affiliated with Sony. Only use games and BIOS files you own.

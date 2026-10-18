@@ -13,7 +13,7 @@ inicial.
 `/data/homebrew/` com permissão `777`.
 
 Requisitos: PS5 com HEN (acesso a `/data`), kstuff e ShadowMountPlus. O passo a passo completo
-está no [README](https://github.com/nagliostro/manta#instalação).
+está no [README](https://github.com/nagliostro/manta/blob/main/README.pt-BR.md#instalação).
 
 ### Novidades
 - **Instalador `.elf` de um passo:** envie para a porta 9021 e pronto. Ele leva o app dentro,
